@@ -9,6 +9,8 @@ from django.utils.encoding import smart_str
 from simplejson import dumps
 # from mysite.base.dbapp.utils import getJSResponse
 
+from django.utils import translation
+
 from django.conf import settings
 visible_BaseCode=True
 # if settings.APP_CONFIG.system.BaseCode=="False":
@@ -66,7 +68,7 @@ class BaseCode(CachingModel):
 def base_code_by(content, content_class=None):
     #chinese_no_choice=["CN_NATION","IDENTITY","CN_PROVINCE"]#非中文这些字段默认为空
     try:
-        from django.utils import translation
+        
         qs=BaseCode.objects.filter(content=content)
         if content_class!=None:
             qs=qs.filter(content_class=content_class)
