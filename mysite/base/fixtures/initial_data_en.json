@@ -1,0 +1,13 @@
+[{"pk":3835,
+"model":"base.BaseCode",
+"fields":{"content":"base.language","display":"Simplified Chinese","value":"zh-cn"}},
+{"pk":3836,
+"model":"base.BaseCode",
+"fields":{"content":"base.language","display":"English","value":"en"}},
+{"pk":3837,
+"model":"base.BaseCode",
+"fields":{"content":"base.language","display":"Spanish","value":"es"}},
+{"pk":3838,
+"model":"base.BaseCode",
+"fields":{"content":"base.language","display":"Traditional Chinese","value":"zh-tw"}}
+]
