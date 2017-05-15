@@ -9,10 +9,10 @@ from django.conf import settings
 from django.utils.translation import ugettext_lazy as _, ugettext
 import re
 
-from mysite.utils import get_option
+# from mysite.utils import get_option
+# from mysite.base.backup import get_attsite_file
 from mysite.base.cached_model import CachingModel
 from mysite.base.operation import OperationBase, Operation, ModelOperation
-from mysite.base.backup import get_attsite_file
 from mysite.base.middleware import threadlocals
 from mysite.base.base_code import BaseCode
 from mysite.base.translation import DataTranslation
@@ -237,50 +237,21 @@ class AppOption(CachingModel):
             if not AppOption.objects.filter(optname='browse_title'):
                 title = get_option("APPOPTION_BROWSE_TITLE")
                 AppOption(optname="browse_title", value=u"%s" % title, discribe=u"%s" % _(u'浏览器标题')).save()
-            #                        if acc and att:
-            #                            if not settings.OEM:
-            #                                    #AppOption(optname="browse_title", value=u"%s" % _(u'ZKECO 时间&安全管理平台'), discribe=u"%s" % _(u'浏览器标题')).save()
-            #                                if settings.ZKACCESS_ATT:
-            #                                    if settings.ZKACCESS_5TO4:
-            #                                        AppOption(optname="browse_title", value=u"%s" % _(u'ZKAccess4.5 门禁管理系统'), discribe=u"%s" % _(u'浏览器标题')).save()
-            #                                    else:
-            #                                        AppOption(optname="browse_title", value=u"%s" % _(u'ZKAccess5.0 门禁管理系统'), discribe=u"%s" % _(u'浏览器标题')).save()
-            #                                else:
-            #                                    AppOption(optname="browse_title", value=u"%s" % _(u'ZKECO 时间&安全管理平台'), discribe=u"%s" % _(u'浏览器标题')).save()
-            #                            else:
-            #                                #AppOption(optname="browse_title", value=u"%s" % _(u'时间&安全管理平台'), discribe=u"%s" % _(u'浏览器标题')).save()
-            #                                if settings.ZKACCESS_ATT:
-            #                                    AppOption(optname="browse_title", value=u"%s" % _(u'门禁管理系统'), discribe=u"%s" % _(u'浏览器标题')).save()
-            #                                else:
-            #                                    AppOption(optname="browse_title", value=u"%s" % _(u'时间&安全管理平台'), discribe=u"%s" % _(u'浏览器标题')).save()
-            #                        elif acc:
-            #                            if not settings.OEM:
-            #                                AppOption(optname="browse_title", value=u"%s" % _(u'ZKAccess5.0 门禁管理系统'), discribe=u"%s" % _(u'浏览器标题')).save()
-            #                            else:
-            #                                AppOption(optname="browse_title", value=u"%s" % _(u'门禁管理系统'), discribe=u"%s" % _(u'浏览器标题')).save()
-            #                        elif pos:
-            #                                AppOption(optname="browse_title", value=u"%s" % _(u'ZKPOS消费管理系统'), discribe=u"%s" % _(u'浏览器标题')).save()
-            #                        else:
-            #                            if not settings.OEM:
-            #                                AppOption(optname="browse_title", value=u"%s" % _(u'ZKTime8.0 考勤管理系统'), discribe=u"%s" % _(u'浏览器标题')).save()
-            #                            else:
-            #                                AppOption(optname="browse_title", value=u"%s" % _(u'考勤管理系统'), discribe=u"%s" % _(u'浏览器标题')).save()
-            #
 
     class Meta:
         verbose_name = _(u"系统参数")
 
 
 # installed_apps = settings.INSTALLED_APPS
-if get_option("IACCESS") and get_option("ATT"):
-    if settings.ZKACCESS_ATT:
-        AppOption.Admin.help_text = _(u'系统参数即系统的一些设置项！')  # 门禁作考勤
-elif get_option("IACCESS"):  # 门禁
-    AppOption.Admin.help_text = _(u'系统参数即系统的一些设置项！')
-elif get_option("POS"):
-    AppOption.Admin.help_text = _(u"系统参数即系统的一些设置项，如消费卡状态监控时间，\n系统会根据此参数值来监控消费卡状态是否过期！")
-else:  # 考勤
-    AppOption.Admin.help_text = _(u'系统参数即系统的一些设置项，如消息监控时间，\n系统会根据此参数值来监控过生日和转正的人员！')
+# if get_option("IACCESS") and get_option("ATT"):
+#     if settings.ZKACCESS_ATT:
+#         AppOption.Admin.help_text = _(u'系统参数即系统的一些设置项！')  # 门禁作考勤
+# elif get_option("IACCESS"):  # 门禁
+#     AppOption.Admin.help_text = _(u'系统参数即系统的一些设置项！')
+# elif get_option("POS"):
+#     AppOption.Admin.help_text = _(u"系统参数即系统的一些设置项，如消费卡状态监控时间，\n系统会根据此参数值来监控消费卡状态是否过期！")
+# else:  # 考勤
+#     AppOption.Admin.help_text = _(u'系统参数即系统的一些设置项，如消息监控时间，\n系统会根据此参数值来监控过生日和转正的人员！')
 
 
 class AppOptionClass(object):

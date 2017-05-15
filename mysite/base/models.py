@@ -10,16 +10,16 @@ from django.utils.translation import ugettext_lazy as _
 from django.contrib.contenttypes.models import ContentType
 from django.db.models.fields import NOT_PROVIDED
 from django.utils import translation
-from django.db.models.signals import post_syncdb
-from django.contrib.auth.management import create_superuser
 from django.contrib.auth import models as auth_app
 from mysite.base.dj6 import dict4ini
+
+# from django.contrib.auth.management import create_superuser
+# from django.db.models.signals import post_syncdb
 # from south.db import db
 import os
 
 from mysite.base.dj6.loading import AppCache
 from mysite.base.custom_model import AppPage
-from mysite.base.sync_contenttype import update_all_contenttypes
 from mysite.base.models_logentry import LogEntry
 from mysite.base.cached_model import CachingModel
 from mysite.base.base_code import BaseCode, base_code_by
@@ -27,6 +27,8 @@ from mysite.base.operation import Operation, ModelOperation
 from mysite.base.options import Option, SystemOption, PersonalOption, options, AppOption, appOptions, SYSPARAM, PERSONAL
 from mysite.base.translation import *
 from mysite.base.modeladmin import ModelAdmin, CACHE_EXPIRE
+
+# from mysite.base.sync_contenttype import update_all_contenttypes
 
 unicode = str
 
@@ -39,21 +41,21 @@ class AppOperation(object):
 
 
 # 替换django.db.models.ManyToManyField, 因为其控件总是显示多选的操作提示，而很多多选控件与此不一致“”
-if hasattr(models.ManyToManyField, "old_m2m"):
-    pass
-else:
-    class ZManyToManyField(models.ManyToManyField):
-        old_m2m = models.ManyToManyField
+# if hasattr(models.ManyToManyField, "old_m2m"):
+#     pass
+# else:
+#     class ZManyToManyField(models.ManyToManyField):
+#         old_m2m = models.ManyToManyField
 
-        def __init__(self, to, **kwargs):
-            super(ZManyToManyField, self).__init__(to, **kwargs)
-            if 'help_text' in kwargs:
-                self.help_text = kwargs['kwargs']
-            else:
-                self.help_text = ""
+#         def __init__(self, to, **kwargs):
+#             super(ZManyToManyField, self).__init__(to, **kwargs)
+#             if 'help_text' in kwargs:
+#                 self.help_text = kwargs['kwargs']
+#             else:
+#                 self.help_text = ""
 
 
-    models.ManyToManyField = ZManyToManyField
+#     models.ManyToManyField = ZManyToManyField
 
 
 class InvisibleAdmin(CachingModel.Admin):
@@ -334,9 +336,9 @@ def post_syncdb_append_permissions(sender, **kwargs):
         print_exc()
 
 
-post_syncdb.disconnect(create_superuser,
-                       sender=auth_app, dispatch_uid="django.contrib.auth.management.create_superuser")
-post_syncdb.connect(post_syncdb_append_permissions)
+# post_syncdb.disconnect(create_superuser,
+#                        sender=auth_app, dispatch_uid="django.contrib.auth.management.create_superuser")
+# post_syncdb.connect(post_syncdb_append_permissions)
 
 
 def init_self_user():

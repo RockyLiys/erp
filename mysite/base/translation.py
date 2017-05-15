@@ -241,7 +241,7 @@ if not (translation.ugettext.__doc__ == _ugettext_.__doc__):
     # print "install the new translation, ", translation.ugettext
     translation.old_ugettext = translation.ugettext
     translation.ugettext = _ugettext_
-    _ = lazy(_ugettext_, unicode)
+    _ = lazy(_ugettext_, str)
     translation.old_ugettext_lazy = translation.ugettext_lazy
     translation.ugettext_lazy = _
     pass

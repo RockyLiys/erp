@@ -4,18 +4,20 @@ from django.db import models
 from django.core.cache import cache
 from django.contrib.auth.models import User
 from django.contrib.auth.models import AnonymousUser
-import datetime
 from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
-from mysite.base.middleware import threadlocals
-from django.utils.encoding import force_unicode
-from mysite.base.operation import OperationBase, Operation, ModelOperation
 from django.utils.translation import ugettext_lazy as _
+from django.utils.encoding import force_text, python_2_unicode_compatible
+import datetime
+# from django.utils.encoding import force_unicode
+
+from mysite.base.middleware import threadlocals
+from mysite.base.operation import OperationBase, Operation, ModelOperation
 from mysite.base.modeladmin import ModelAdmin, CACHE_EXPIRE
 from mysite.base.models_addition import AdditionData
 from mysite.base.models_logentry import LogEntry, ADDITION, DELETION, CHANGE
 
-from mysite.base.sync_hook import delete_hook, save_hook
+# from mysite.base.sync_hook import delete_hook, save_hook
 
 STATUS_OK = 0
 STATUS_INVALID = 999
@@ -23,8 +25,10 @@ STATUS_PAUSED = 2
 STATUS_STOP = 3
 STATUS_LEAVE = 3
 
-SAVETYPE_NEW = 1
-SAVETYPE_EDIT = 2
+SAVETYPE_NEW = 1   # 新建对象
+SAVETYPE_EDIT = 2  # 编辑对象
+
+force_unicode = str
 
 CACHE_PREFIX = settings.CACHE_MIDDLEWARE_KEY_PREFIX
 
@@ -116,15 +120,13 @@ class MetaCaching(ModelBase):
         return new_class
 
 
+@python_2_unicode_compatible
 class CachingModel(models.Model, OperationBase):
-    change_operator = models.CharField(verbose_name=_(u'修改者'), max_length=30, null=True,
-                                       editable=False)  # who last modify
+    change_operator = models.CharField(verbose_name=_(u'修改者'), max_length=30, null=True, editable=False)  # who last modify
     change_time = models.DateTimeField(verbose_name=_(u'修改时间'), auto_now=True, editable=False, null=True)
-    create_operator = models.CharField(verbose_name=_(u'创建者'), max_length=30, null=True,
-                                       editable=False)  # who create this object
+    create_operator = models.CharField(verbose_name=_(u'创建者'), max_length=30, null=True, editable=False)  # who create this object
     create_time = models.DateTimeField(verbose_name=_(u'创建时间'), editable=False, null=True)
-    delete_operator = models.CharField(verbose_name=_(u'删除者'), max_length=30, null=True,
-                                       editable=False)  # who delete this object
+    delete_operator = models.CharField(verbose_name=_(u'删除者'), max_length=30, null=True, editable=False)  # who delete this object
     delete_time = models.DateTimeField(verbose_name=_(u'删除时间'), editable=False, null=True)
     status = models.SmallIntegerField(verbose_name=_(u'状态'), default=STATUS_OK, editable=False, null=False)
     all_objects = models.Manager()
@@ -132,8 +134,7 @@ class CachingModel(models.Model, OperationBase):
     def get_addition_field(self, key):
         try:
             content_type_id = ContentType.objects.get_for_model(self).pk
-            a = AdditionData.objects.get(content_type=content_type_id, object_id=self.pk, key=key,
-                                         delete_time__isnull=True)
+            a = AdditionData.objects.get(content_type=content_type_id, object_id=self.pk, key=key, delete_time__isnull=True)
             if a.data:  return a.data
             return a.value
         except:
@@ -143,8 +144,7 @@ class CachingModel(models.Model, OperationBase):
     def delete_addition_field(self, key):
         content_type_id = ContentType.objects.get_for_model(self).pk
         try:
-            a = AdditionData.objects.get(content_type=content_type_id, object_id=self.pk, key=key,
-                                         delete_time__isnull=True)
+            a = AdditionData.objects.get(content_type=content_type_id, object_id=self.pk, key=key, delete_time__isnull=True)
             a.delete_time = datetime.datetime.now()
             a.save()
         except:

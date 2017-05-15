@@ -8,7 +8,7 @@ from django.db.models.query import QuerySet
 import sys
 import datetime
 
-from mysite.base.models_logentry import LogEntry
+# from mysite.base.models_logentry import LogEntry
 
 
 class ModelOperation(object):

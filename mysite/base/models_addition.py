@@ -5,10 +5,17 @@ from django.core.cache import cache
 from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
 from django.utils.translation import ugettext_lazy as _
-from django.utils.encoding import smart_unicode
+from django.utils.encoding import force_text, python_2_unicode_compatible
+
+
+# from django.utils.encoding import smart_unicode
+
 from mysite.base.modeladmin import ModelAdmin, CACHE_EXPIRE
 
+smart_unicode = str
 
+
+@python_2_unicode_compatible
 class AdditionData(models.Model):
     create_time = models.DateTimeField(_(u'创建时间'), auto_now=True)
     user = models.ForeignKey(User, verbose_name=_(u"用户"), null=True)
@@ -21,8 +28,8 @@ class AdditionData(models.Model):
 
     class Admin(ModelAdmin):
         list_display = (
-        'create_time|fmt_datetime', 'user|obj_url', 'content_type|content_type_str', 'object_repr|content_url:item',
-        'value', 'data')
+            'create_time|fmt_datetime', 'user|obj_url', 'content_type|content_type_str', 'object_repr|content_url:item', 'value', 'data'
+        )
         list_filter = ('action_time', 'user', 'content_type')
         read_only = True
         menu_index = 10000
@@ -35,5 +42,7 @@ class AdditionData(models.Model):
         return u"[%s]%s: %s %s" % (self.action_time, self.user, self.get_action_flag_display(), self.object_repr)
 
     def get_edited_object(self):
-        "Returns the edited object represented by this log entry"
+        """
+            Returns the edited object represented by this log entry
+        """
         return self.content_type.get_object_for_this_type(pk=self.object_id)

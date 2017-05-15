@@ -7,18 +7,19 @@ from mysite.base.translation import DataTranslation
 from django.utils.translation import ugettext_lazy as _
 from django.utils.encoding import smart_str
 from simplejson import dumps
-from dbapp.utils import getJSResponse
+# from mysite.base.dbapp.utils import getJSResponse
 
 from django.conf import settings
 visible_BaseCode=True
-if settings.APP_CONFIG.system.BaseCode=="False":
-    visible_BaseCode=False
+# if settings.APP_CONFIG.system.BaseCode=="False":
+#     visible_BaseCode=False
 
 
 class BaseCode(CachingModel):
-    u"""
+    """
     数据代码表, 该代码表用于保存或限定一些常用数据代码，如“性别”、“职务”等
-    数据代码仅仅是为了对数据进行代码化的管理，并规范使用。通常，数据代码是系统初始化的时候就要写入全部项目，该表在安装完成后就不需要对数据进行改动。对于需要维护、需要在运行中扩充、或者需要维护其他属性的数据项目，通常应独立为新的数据模型。
+    数据代码仅仅是为了对数据进行代码化的管理，并规范使用。通常，数据代码是系统初始化的时候就要写入全部项目，该表在安装完成后就不需要对数据进行改动。对于需要维护、需要在运行中扩充、
+    或者需要维护其他属性的数据项目，通常应独立为新的数据模型。
     """
     content = models.CharField(_(u'代码'), max_length=30)
     content_class = models.IntegerField(_(u'代码类别'), null=True, default=0, blank=True,editable=False)

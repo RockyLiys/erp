@@ -15,43 +15,45 @@ from django.core.urlresolvers import RegexURLPattern
 from django.utils.translation import ugettext_lazy as _
 from dbapp.custom_model_view import AppPageView,GridModelView
 
+from django.views.i18n import set_language
+from base.options import options
+
+from dbapp.datautils import QueryData
+from dbapp.modelutils import GetModel        
+from mysite.personnel.models.model_emp import format_pin
+
 def index(request):
-        #logger.info('request: %s'%request)
-        if request.session.has_key("employee"):
-            return HttpResponseRedirect(SELFSERVICE_LOGIN_REDIRECT_URL)
-        return HttpResponseRedirect(LOGIN_REDIRECT_URL)
+    #logger.info('request: %s'%request)
+    if request.session.has_key("employee"):
+        return HttpResponseRedirect(SELFSERVICE_LOGIN_REDIRECT_URL)
+    return HttpResponseRedirect(LOGIN_REDIRECT_URL)
 #        return render_to_response("index.html", RequestContext(request, {}),);
 
 def my_i18n(request):
-        from django.views.i18n import set_language
-        from base.options import options
-        r=set_language(request)
-        set_cookie(r, 'django_language', request.REQUEST['language'], 365*24*60*60)
-        options['base.language']=request.REQUEST['language']
-        return r
+    r=set_language(request)
+    set_cookie(r, 'django_language', request.REQUEST['language'], 365*24*60*60)
+    options['base.language']=request.REQUEST['language']
+    return r
     
 def checkno(request,app_label,model_name):
-        from dbapp.datautils import QueryData
-        from dbapp.modelutils import GetModel        
-        from mysite.personnel.models.model_emp import format_pin
-        obj=GetModel(app_label, model_name)
-        data=dict(request.REQUEST.items())
-        
-        #qs,cl=QueryData(request,obj)
-        if 'PIN__exact' in data.keys():
-            data['PIN__exact']=format_pin(str(data['PIN__exact']))
-        d={}
-        for k,v in data.items():
-            d[str(k)]=v
+    obj=GetModel(app_label, model_name)
+    data=dict(request.REQUEST.items())
+    
+    #qs,cl=QueryData(request,obj)
+    if 'PIN__exact' in data.keys():
+        data['PIN__exact']=format_pin(str(data['PIN__exact']))
+    d={}
+    for k,v in data.items():
+        d[str(k)]=v
 
-        qs=obj.all_objects.filter(**d)
-        if qs.count()>0:
-            if model_name == "Employee":
-                return HttpResponse(smart_str(simplejson.dumps({"info": "&times; " + u"%s"%_(u"重复使用"), "ret": 1})))
-            else:
-                return HttpResponse(smart_str(simplejson.dumps({"info": "&times; " + u"%s"%_(u"已存在"), "ret": 1})))
+    qs=obj.all_objects.filter(**d)
+    if qs.count()>0:
+        if model_name == "Employee":
+            return HttpResponse(smart_str(simplejson.dumps({"info": "&times; " + u"%s"%_(u"重复使用"), "ret": 1})))
         else:
-            return HttpResponse(smart_str(simplejson.dumps({"info": "&radic; " + u"%s"%_(u"可使用"), "ret": 2})))
+            return HttpResponse(smart_str(simplejson.dumps({"info": "&times; " + u"%s"%_(u"已存在"), "ret": 1})))
+    else:
+        return HttpResponse(smart_str(simplejson.dumps({"info": "&radic; " + u"%s"%_(u"可使用"), "ret": 2})))
 
 surl=UNIT_URL[1:]
 

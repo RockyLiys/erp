@@ -2,10 +2,10 @@
 # -*- coding:utf-8 -*-
 
 from django.utils.encoding import smart_str
-from simplejson import dumps
 from django.forms import forms
 
-from mysite.base.dbapp import widgets
+from simplejson import dumps
+# from mysite.base.dbapp import widgets
 from mysite.base.grid_utils import GridBase
 
 

@@ -5,7 +5,9 @@ from django.core.cache import cache
 from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
 from django.utils.translation import ugettext_lazy as _
-from django.utils.encoding import smart_unicode
+from django.utils.encoding import force_text, python_2_unicode_compatible
+
+# from django.utils.encoding import smart_unicode
 # basetranslation import ugettext_lazy as _
 
 from mysite.base.modeladmin import ModelAdmin, CACHE_EXPIRE
@@ -18,11 +20,13 @@ OTHER_ACTION = 4
 LOGIN = 5
 EXPORT = 6
 
+smart_unicode = str
+
 
 class LogEntryManager(models.Manager):
+    
     def log_action(self, user_id, content_type_id, object_id, object_repr, action_flag, change_message=''):
-        e = self.model(None, None, user_id, content_type_id, smart_unicode(object_id), object_repr[:200], action_flag,
-                       change_message)
+        e = self.model(None, None, user_id, content_type_id, smart_unicode(object_id), object_repr[:200], action_flag, change_message)
         e.save(force_insert=True)
 
     def log_action_other(self, user_id, object, change_message=''):
@@ -37,22 +41,23 @@ class LogEntryManager(models.Manager):
         self.log_action(user_id, content_type_id, obj, obj_str, OTHER_ACTION, change_message)
 
 
+@python_2_unicode_compatible
 class LogEntry(models.Model):
     action_time = models.DateTimeField(_(u'动作时间'), auto_now=True)
     user = models.ForeignKey(User, verbose_name=_(u"用户"), null=True, related_name="logentryofuser")
-    content_type = models.ForeignKey(ContentType, verbose_name=_(u"对象类型"), blank=True, null=True,
-                                     related_name="logentryofct")
+    content_type = models.ForeignKey(ContentType, verbose_name=_(u"对象类型"), blank=True, null=True, related_name="logentryofct")
     object_id = models.CharField(_(u'对象ID'), max_length=100, blank=True, null=True)
     object_repr = models.CharField(_(u'对象描述'), max_length=200)
     action_flag = models.PositiveSmallIntegerField(_(u'动作标识'), choices=
-    ((ADDITION, _(u"增加")),
-     (CHANGE, _(u"修改")),
-     (DELETION, _(u"删除")),
-     (OTHER_ACTION, _(u"其他")),
-     (LOGIN, _(u"登录")),
-     (EXPORT, _(u"导出"))
-     )
-                                                   )
+    (
+        (ADDITION, _(u"增加")),
+        (CHANGE, _(u"修改")),
+        (DELETION, _(u"删除")),
+        (OTHER_ACTION, _(u"其他")),
+        (LOGIN, _(u"登录")),
+        (EXPORT, _(u"导出"))
+    )
+    )
     change_message = models.CharField(_(u'改变消息'), max_length=512, blank=True)
     objects = LogEntryManager()
 
