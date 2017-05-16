@@ -126,7 +126,14 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.10/howto/static-files/
 
+STATIC_ROOT = 'static '
+
 STATIC_URL = '/static/'
 
+STATICFILES_DIRS = (
+    # 'djangodemo/static',
+    # 'demo1/static/',
+    # 'demo2/static/',
+)
 
 APP_CONFIG = ''

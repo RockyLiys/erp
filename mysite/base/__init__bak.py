@@ -1,9 +1,6 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
-from django.contrib.auth.models import Group, User, Permission, UserManager
-from django.contrib.contenttypes.models import ContentType
 from django.utils.translation import ugettext_lazy as _
-from django.db import models as db_models
 from django.conf import settings
 from django.db import models
 from django.core.urlresolvers import reverse
@@ -11,18 +8,22 @@ from django.core.cache import cache
 from django.utils.translation import get_language
 from django.utils.encoding import force_text, python_2_unicode_compatible
 
+from django.contrib.auth.models import Group, User, Permission, UserManager
+from django.contrib.contenttypes.models import ContentType
 
-from mysite.base.translation import DataTranslation, _ugettext_ as _
 from mysite.base.models import InvisibleAdmin
 from mysite.base.cached_model import CachingModel
 from mysite.base.modeladmin import ModelAdmin, CACHE_EXPIRE
 from mysite.base.operation import Operation
-from mysite.base.middleware import threadlocals
-from mysite.base.login_bio import OperatorTemplate
-from mysite.base.middleware.threadlocals import  get_current_request
 from mysite.base.custom_model import AppPage
 from mysite.base.models import AppOperation
+
+from mysite.base.translation import DataTranslation, _ugettext_ as _
+from mysite.base.middleware import threadlocals
+from mysite.base.middleware.threadlocals import  get_current_request
 from mysite.base.dj6.loading import get_app
+
+
 
 
 class BaseMenuAdmin(CachingModel.Admin):

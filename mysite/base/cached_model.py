@@ -30,11 +30,11 @@ SAVETYPE_EDIT = 2  # 编辑对象
 
 force_unicode = str
 
-CACHE_PREFIX = settings.CACHE_MIDDLEWARE_KEY_PREFIX
+# CACHE_PREFIX = settings.CACHE_MIDDLEWARE_KEY_PREFIX
 
 
-def cache_key(model, id):
-    return ('%s_DBC:%s:%s' % (CACHE_PREFIX, model._meta.db_table, id)).replace(' ', '_')
+# def cache_key(model, id):
+#     return ('%s_DBC:%s:%s' % (CACHE_PREFIX, model._meta.db_table, id)).replace(' ', '_')
 
 
 class RowCacheManager(models.Manager):

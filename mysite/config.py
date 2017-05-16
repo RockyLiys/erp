@@ -4,21 +4,21 @@
 #如果能够区分默写操作一定是某子系统的，可以通过ATT,POST,ACCESS...这些个参数来控制，
 #否则使用新的自定义参数来配置
 #默认为ZKECO的配置
-import const
+from mysite import const
 from django.utils.translation import ugettext_lazy as _
-import settings
-from base.backup import get_attsite_file
-att_file = get_attsite_file()
+from django.conf import settings
+# from base.backup import get_attsite_file
+# att_file = get_attsite_file()
 v_pos_id = False
 v_pos_ic = False
-op_pos_id = att_file["Options"]["POS_ID"]
-op_pos_ic = att_file["Options"]["POS_IC"]
+# op_pos_id = att_file["Options"]["POS_ID"]
+# op_pos_ic = att_file["Options"]["POS_IC"]
 
-if op_pos_id.lower()=="true":
-    v_pos_id = True
+# if op_pos_id.lower()=="true":
+#     v_pos_id = True
 
-if op_pos_ic.lower()=="true":
-    v_pos_ic = True
+# if op_pos_ic.lower()=="true":
+#     v_pos_ic = True
 
 #-----------------------------------------app控制参数-------------------------------
 const.ATT = False

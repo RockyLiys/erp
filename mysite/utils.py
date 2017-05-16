@@ -10,7 +10,6 @@ import sys
 from mysite import config
 from django.conf import settings
 from django.db import  connection
-from django.db import  connection
 from django import forms
 from dbapp.widgets import form_field
 from django.forms import forms
@@ -80,20 +79,20 @@ def write_log(str, primary=False):#primary暂时不使用
 #            pass
 
 def pos_write_log(str,sn,cardno):
-        if settings.DEBUG:
-            try:
-                dt=datetime.datetime.now()
-                path=settings.APP_HOME.replace('\\','/') + '/tmp/zkpos/poslog/%s/%s/'%(sn,datetime.datetime.now().strftime("%Y-%m-%d"))
-                if not os.path.exists(path):
-                    os.makedirs(path)
-                mfile=path+'poslog_%s_%s_%s.txt'%(datetime.datetime.now().strftime("%Y-%m-%d"),sn,cardno)
-                f=codecs.open(mfile,'a')
-                wstr='Request-%s-%s\r\n'%(datetime.datetime.now().strftime("%y-%m-%d %H:%M:%S %f"),str)
-                f.write(wstr)
-                f.close()
-            except:
-                print_exc()
-                pass
+    if settings.DEBUG:
+        try:
+            dt=datetime.datetime.now()
+            path=settings.APP_HOME.replace('\\','/') + '/tmp/zkpos/poslog/%s/%s/'%(sn,datetime.datetime.now().strftime("%Y-%m-%d"))
+            if not os.path.exists(path):
+                os.makedirs(path)
+            mfile=path+'poslog_%s_%s_%s.txt'%(datetime.datetime.now().strftime("%Y-%m-%d"),sn,cardno)
+            f=codecs.open(mfile,'a')
+            wstr='Request-%s-%s\r\n'%(datetime.datetime.now().strftime("%y-%m-%d %H:%M:%S %f"),str)
+            f.write(wstr)
+            f.close()
+        except:
+            print_exc()
+            pass
 
 
 def delete_log():
