@@ -11,19 +11,17 @@ from django.utils.encoding import force_text, python_2_unicode_compatible
 from django.contrib.auth.models import Group, User, Permission, UserManager
 from django.contrib.contenttypes.models import ContentType
 
-from mysite.base.models import InvisibleAdmin
+from mysite.base.models_bak import InvisibleAdmin
 from mysite.base.cached_model import CachingModel
 from mysite.base.modeladmin import ModelAdmin, CACHE_EXPIRE
 from mysite.base.operation import Operation
 from mysite.base.custom_model import AppPage
-from mysite.base.models import AppOperation
+from mysite.base.models_bak import AppOperation
 
 from mysite.base.translation import DataTranslation, _ugettext_ as _
 from mysite.base.middleware import threadlocals
-from mysite.base.middleware.threadlocals import  get_current_request
+from mysite.base.middleware.threadlocals import get_current_request
 from mysite.base.dj6.loading import get_app
-
-
 
 
 class BaseMenuAdmin(CachingModel.Admin):
@@ -32,7 +30,7 @@ class BaseMenuAdmin(CachingModel.Admin):
 
 
 class UserAdmin(BaseMenuAdmin):
-    query_fields = ["username","first_name"]
+    query_fields = ["username", "first_name"]
     menu_index = 101
     help_text = _(u'''新增本系统的用户，\"职员状态\"默认选中，如不选，用户将停用，不能登入系统！''')
 

@@ -163,7 +163,7 @@ class AppCache(object):
         for app in self.get_apps():
             if hasattr(app, '__path__'):        # models/__init__.py package
                 app_paths.extend([upath(path) for path in app.__path__])
-            else:                               # models.py module
+            else:                               # models_bak.py module
                 app_paths.append(upath(app.__file__))
         return app_paths
 
@@ -183,7 +183,7 @@ class AppCache(object):
                 if app_label == app_name.split('.')[-1]:
                     mod = self.load_app(app_name, False)
                     if mod is None and not emptyOK:
-                        raise ImproperlyConfigured("App with label %s is missing a models.py module." % app_label)
+                        raise ImproperlyConfigured("App with label %s is missing a models_bak.py module." % app_label)
                     if self.available_apps is not None and app_label not in self.available_apps:
                         raise UnavailableApp("App with label %s isn't available." % app_label)
                     return mod
