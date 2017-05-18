@@ -9,8 +9,8 @@ from django.contrib.contenttypes.models import ContentType
 from django.utils.translation import ugettext_lazy as _
 from django.utils.encoding import force_text, python_2_unicode_compatible
 import datetime
-# from django.utils.encoding import force_unicode
 
+from mysite.base import *
 from mysite.base.middleware import threadlocals
 from mysite.base.operation import OperationBase, Operation, ModelOperation
 from mysite.base.modeladmin import ModelAdmin, CACHE_EXPIRE
@@ -19,22 +19,13 @@ from mysite.base.models_logentry import LogEntry, ADDITION, DELETION, CHANGE
 
 # from mysite.base.sync_hook import delete_hook, save_hook
 
-STATUS_OK = 0
-STATUS_INVALID = 999
-STATUS_PAUSED = 2
-STATUS_STOP = 3
-STATUS_LEAVE = 3
-
-SAVETYPE_NEW = 1   # 新建对象
-SAVETYPE_EDIT = 2  # 编辑对象
-
 force_unicode = str
 
-# CACHE_PREFIX = settings.CACHE_MIDDLEWARE_KEY_PREFIX
+CACHE_PREFIX = settings.CACHE_MIDDLEWARE_KEY_PREFIX
 
 
-# def cache_key(model, id):
-#     return ('%s_DBC:%s:%s' % (CACHE_PREFIX, model._meta.db_table, id)).replace(' ', '_')
+def cache_key(model, id):
+    return ('%s_DBC:%s:%s' % (CACHE_PREFIX, model._meta.db_table, id)).replace(' ', '_')
 
 
 class RowCacheManager(models.Manager):

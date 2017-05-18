@@ -10,7 +10,7 @@ from django import forms
 
 from mysite.base.base_code import base_code_by
 from mysite.base.cached_model import CachingModel
-from mysite.base.models_bak import is_parent_model
+from mysite.base.models import is_parent_model
 
 User._menu_index = 400
 Permission._visible = False

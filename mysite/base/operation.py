@@ -5,9 +5,11 @@ from django.utils.translation import ugettext_lazy as _
 from django.db import models
 from django import forms
 from django.db.models.query import QuerySet
-import sys
 import datetime
+import sys
 
+
+from mysite.base import *
 # from mysite.base.models_logentry import LogEntry
 
 
