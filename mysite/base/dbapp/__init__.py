@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
-import base
-from django.template import add_to_builtins
-add_to_builtins('dbapp.templatetags.dbapp_tags')
-add_to_builtins('base.templatetags.base_tags')
+from mysite import base
+# from django.template import add_to_builtins
+# add_to_builtins('dbapp.templatetags.dbapp_tags')
+# add_to_builtins('base.templatetags.base_tags')
 
 from django.contrib.auth.models import User
-from dbapp.models import DbBackupLog
+# from dbapp.models import DbBackupLog
 import os
 os.environ['DJANGO_SETTINGS_MODULE'] = 'mysite.settings'
 from django.conf import settings
@@ -20,8 +20,8 @@ except:
     except:
         pass
 
-if template_display:#
-    User.Admin.list_display=('username', 'first_name', 'last_name','groups|detail_str','email', 'is_staff|boolean_icon','is_superuser|boolean_icon','date_joined|fmt_shortdatetime','last_login|fmt_shortdatetime','get_user_template')
-else:#4.1
-    User.Admin.list_display=('username', 'first_name', 'last_name','groups|detail_str','email', 'is_staff|boolean_icon','is_superuser|boolean_icon','date_joined|fmt_shortdatetime','last_login|fmt_shortdatetime')
-    
+# if template_display:#
+#     User.Admin.list_display=('username', 'first_name', 'last_name','groups|detail_str','email', 'is_staff|boolean_icon','is_superuser|boolean_icon','date_joined|fmt_shortdatetime','last_login|fmt_shortdatetime','get_user_template')
+# else:#4.1
+#     User.Admin.list_display=('username', 'first_name', 'last_name','groups|detail_str','email', 'is_staff|boolean_icon','is_superuser|boolean_icon','date_joined|fmt_shortdatetime','last_login|fmt_shortdatetime')
+#

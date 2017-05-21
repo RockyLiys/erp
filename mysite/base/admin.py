@@ -3,3 +3,18 @@
 from django.contrib import admin
 
 # Register your models here.
+from mysite.base.models_addition import AdditionData
+from mysite.base.models_logentry import LogEntry
+from mysite.base.modeladmin import ModelAdmin
+
+
+@admin.register(LogEntry)
+class CachingModelAdmin(ModelAdmin):
+    search_fields = ('name',)
+
+
+@admin.register(AdditionData)
+class AdditionDataAdmin(ModelAdmin):
+    pass
+
+

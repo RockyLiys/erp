@@ -5,8 +5,8 @@ from django.utils.encoding import smart_str
 from django.forms import forms
 
 from simplejson import dumps
-# from mysite.base.dbapp import widgets
 from mysite.base.grid_utils import GridBase
+from mysite.base.dbapp import widgets
 
 
 class AppPage(object):

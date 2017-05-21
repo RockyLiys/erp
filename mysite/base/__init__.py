@@ -10,4 +10,5 @@ STATUS_LEAVE = 3
 SAVETYPE_NEW = 1   # 新建对象
 SAVETYPE_EDIT = 2  # 编辑对象
 
-default_app_config = 'mysite.base.apps.BaseConfig'
+default_app_config = "mysite.base.apps.BaseConfig"
+

@@ -52,7 +52,7 @@ class RowCacheManager(models.Manager):
         if model_key is not None:
             model = cache.get(model_key)
             if model is not None:
-                # print "\tget in cache, %s->%s"%(pointer_key, model_key)
+                print("\tget in cache, %s->%s"%(pointer_key, model_key))
                 return model
         # One of the cache queries missed, so we have to get the object from the database:
         # print "not in cache"
@@ -61,13 +61,13 @@ class RowCacheManager(models.Manager):
         if cache_expire < 10: cache_expire = CACHE_EXPIRE
         model_key = cache_key(model, model.pk)
         cache.set(pointer_key, model_key, cache_expire)
-        # print "\tset_cache1: %s->%s"%(pointer_key, model_key)
+        print("\tset_cache1: %s->%s"%(pointer_key, model_key))
         try:
             cache.set(model_key, model, cache_expire)
-            # print "\tset_cache2: %s->%s,%s"%(model_key, model.pk, model)
+            print("\tset_cache2: %s->%s,%s"%(model_key, model.pk, model))
         except:
-            # print model_key, model, model.__class__
-            # import traceback; traceback.#print_exc()
+            print(model_key, model, model.__class__)
+            # import traceback; traceback.print_exc()
             pass
         return model
 
@@ -113,11 +113,14 @@ class MetaCaching(ModelBase):
 
 @python_2_unicode_compatible
 class CachingModel(models.Model, OperationBase):
-    change_operator = models.CharField(verbose_name=_(u'修改者'), max_length=30, null=True, editable=False)  # who last modify
+    change_operator = models.CharField(verbose_name=_(u'修改者'), max_length=30, null=True,
+                                       editable=False)  # who last modify
     change_time = models.DateTimeField(verbose_name=_(u'修改时间'), auto_now=True, editable=False, null=True)
-    create_operator = models.CharField(verbose_name=_(u'创建者'), max_length=30, null=True, editable=False)  # who create this object
+    create_operator = models.CharField(verbose_name=_(u'创建者'), max_length=30, null=True,
+                                       editable=False)  # who create this object
     create_time = models.DateTimeField(verbose_name=_(u'创建时间'), editable=False, null=True)
-    delete_operator = models.CharField(verbose_name=_(u'删除者'), max_length=30, null=True, editable=False)  # who delete this object
+    delete_operator = models.CharField(verbose_name=_(u'删除者'), max_length=30, null=True,
+                                       editable=False)  # who delete this object
     delete_time = models.DateTimeField(verbose_name=_(u'删除时间'), editable=False, null=True)
     status = models.SmallIntegerField(verbose_name=_(u'状态'), default=STATUS_OK, editable=False, null=False)
     all_objects = models.Manager()
@@ -125,7 +128,8 @@ class CachingModel(models.Model, OperationBase):
     def get_addition_field(self, key):
         try:
             content_type_id = ContentType.objects.get_for_model(self).pk
-            a = AdditionData.objects.get(content_type=content_type_id, object_id=self.pk, key=key, delete_time__isnull=True)
+            a = AdditionData.objects.get(content_type=content_type_id, object_id=self.pk, key=key,
+                                         delete_time__isnull=True)
             if a.data:  return a.data
             return a.value
         except:
@@ -135,7 +139,8 @@ class CachingModel(models.Model, OperationBase):
     def delete_addition_field(self, key):
         content_type_id = ContentType.objects.get_for_model(self).pk
         try:
-            a = AdditionData.objects.get(content_type=content_type_id, object_id=self.pk, key=key, delete_time__isnull=True)
+            a = AdditionData.objects.get(content_type=content_type_id, object_id=self.pk, key=key,
+                                         delete_time__isnull=True)
             a.delete_time = datetime.datetime.now()
             a.save()
         except:
@@ -217,7 +222,7 @@ class CachingModel(models.Model, OperationBase):
 
     def save(self, *args, **kwargs):
         is_new = False
-        if self.pk == None or self.create_time == None:
+        if self.pk is None or self.create_time is None:
             is_new = True
         elif kwargs.get("force_insert", False):
             is_new = True

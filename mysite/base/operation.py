@@ -6,9 +6,6 @@ from django.db import models
 from django import forms
 from django.db.models.query import QuerySet
 import datetime
-import sys
-
-
 from mysite.base import *
 # from mysite.base.models_logentry import LogEntry
 
@@ -66,7 +63,7 @@ class ModelOperation(object):
         f.title = (self.help_text or self.verbose_name) or ""
         return f
 
-    def __unicode__(self):
+    def __str__(self):
         return u"%s" % self.verbose_name
 
 
@@ -93,7 +90,8 @@ NON_FIELD_ERRORS = '__all__'
 
 def parse_value(request, param_name, op):
     value = request.REQUEST.get(param_name, None)
-    if value == None: return value
+    if value is None:
+        return value
     try:
         return op.rel.to.objects.get(pk=request.REQUEST.get(param_name, None))
     except:
@@ -110,14 +108,14 @@ class OperationBase(object):
     @classmethod
     def get_all_operations(self, user, ref_model=None):
         for name in dir(self):
-            if type(getattr(self, name)) == types.ClassType:
+            if isinstance(getattr(self, name), types.CodeType):
                 print("class", name)
                 if issubclass(getattr(self, name), ModelOperation):
                     print("operation", name)
         cc = []
         for name in dir(self):
             try:
-                if type(getattr(self, name)) == types.TypeType and issubclass(getattr(self, name), ModelOperation):
+                if isinstance(getattr(self, name), types.TypeType) and issubclass(getattr(self, name), ModelOperation):
                     if not name.startswith("_"):
                         tn = name
                     else:

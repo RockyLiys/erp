@@ -5,7 +5,10 @@ import datetime
 import os
 from django.http import HttpResponse
 from django.conf import settings
-from django.core.cache.backends.filebased import CacheClass
+# from django.core.cache.backends.filebased import CacheClass
+
+unicode = str
+
 
 def set_cookie(response, key, value, expire=None):
         if expire is None:

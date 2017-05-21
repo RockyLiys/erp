@@ -1,12 +1,10 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
+from django.contrib import admin
 CACHE_EXPIRE = 300
 
 
-class ModelAdmin:
-    search_fields = ()
-    list_filter = ()
-    list_display = ()
+class ModelAdmin(admin.ModelAdmin):
     cache = CACHE_EXPIRE
     log = True
     visible = True

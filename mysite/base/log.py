@@ -23,7 +23,7 @@ def initlog():
     dir_path = os.path.split(logfile)[0]
     if not os.path.exists(dir_path):
         os.makedirs(dir_path)
-    f = file(logfile, "wt")
+    f = open(logfile, "wt")
     f.close()
 
     hdlr = logging.FileHandler(logfile)
