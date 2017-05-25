@@ -7,6 +7,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ObjectDoesNotExist
 from django.utils.translation import ugettext_lazy as _
 from django import forms
+from django.conf import settings
 
 from mysite.base.base_code import base_code_by
 from mysite.base.cached_model import CachingModel
@@ -83,7 +84,7 @@ class Role(CachingModel):
 
 class UserRole(CachingModel):
     """定义用户在某些对象上的角色"""
-    user = models.ForeignKey(User, related_name="userroleuser")
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name="userroleuser")
     objects_filter = models.CharField(max_length=200)  # 对象查询条件，用户在满足该查询条件的对象上才具有指定角色
     role = models.ForeignKey(Role)
 

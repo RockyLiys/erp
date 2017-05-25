@@ -12,7 +12,7 @@ from django.utils.encoding import force_text, python_2_unicode_compatible
 
 from mysite.base.modeladmin import ModelAdmin, CACHE_EXPIRE
 from mysite.base.operation import Operation
-
+from django.conf import  settings
 ADDITION = 1
 CHANGE = 2
 DELETION = 3
@@ -44,7 +44,7 @@ class LogEntryManager(models.Manager):
 @python_2_unicode_compatible
 class LogEntry(models.Model):
     action_time = models.DateTimeField(_(u'动作时间'), auto_now=True)
-    user = models.ForeignKey(User, verbose_name=_(u"用户"), null=True, related_name="logentryofuser")
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name=_(u"用户"), null=True, related_name="logentryofuser")
     content_type = models.ForeignKey(ContentType, verbose_name=_(u"对象类型"), blank=True, null=True, related_name="logentryofct")
     object_id = models.CharField(_(u'对象ID'), max_length=100, blank=True, null=True)
     object_repr = models.CharField(_(u'对象描述'), max_length=200)

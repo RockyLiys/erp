@@ -6,7 +6,7 @@ from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
 from django.utils.translation import ugettext_lazy as _
 from django.utils.encoding import force_text, python_2_unicode_compatible
-
+from django.conf import settings
 
 # from django.utils.encoding import smart_unicode
 
@@ -18,7 +18,7 @@ smart_unicode = str
 @python_2_unicode_compatible
 class AdditionData(models.Model):
     create_time = models.DateTimeField(_(u'创建时间'), auto_now=True)
-    user = models.ForeignKey(User, verbose_name=_(u"用户"), null=True)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name=_(u"用户"), null=True)
     content_type = models.ForeignKey(ContentType, verbose_name=_("对象类型"), blank=True, null=True)
     object_id = models.CharField(_(u'对象ID'), max_length=100, blank=False, null=False)
     key = models.CharField(_(u'键'), max_length=64, blank=False)

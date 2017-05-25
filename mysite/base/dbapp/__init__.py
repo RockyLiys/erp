@@ -7,13 +7,13 @@ from mysite import base
 from django.contrib.auth.models import User
 # from dbapp.models import DbBackupLog
 import os
-os.environ['DJANGO_SETTINGS_MODULE'] = 'mysite.settings'
+os.environ['DJANGO_SETTINGS_MODULE'] = 'erp.settings'
 from django.conf import settings
 template_display = False#默认不显示User的指纹数
 try:
     template_display = not settings.ZKACCESS_5TO4 #4.1不显示   
 except:
-    os.environ['DJANGO_SETTINGS_MODULE'] = 'mysite.settings'
+    os.environ['DJANGO_SETTINGS_MODULE'] = 'erp.settings'
     from django.conf import settings
     try:
         template_display = not settings.ZKACCESS_5TO4

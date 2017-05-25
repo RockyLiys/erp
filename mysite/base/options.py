@@ -242,18 +242,6 @@ class AppOption(CachingModel):
         verbose_name = _(u"系统参数")
 
 
-# installed_apps = settings.INSTALLED_APPS
-# if get_option("IACCESS") and get_option("ATT"):
-#     if settings.ZKACCESS_ATT:
-#         AppOption.Admin.help_text = _(u'系统参数即系统的一些设置项！')  # 门禁作考勤
-# elif get_option("IACCESS"):  # 门禁
-#     AppOption.Admin.help_text = _(u'系统参数即系统的一些设置项！')
-# elif get_option("POS"):
-#     AppOption.Admin.help_text = _(u"系统参数即系统的一些设置项，如消费卡状态监控时间，\n系统会根据此参数值来监控消费卡状态是否过期！")
-# else:  # 考勤
-#     AppOption.Admin.help_text = _(u'系统参数即系统的一些设置项，如消息监控时间，\n系统会根据此参数值来监控过生日和转正的人员！')
-
-
 class AppOptionClass(object):
     def __getitem__(self, optname):
         try:
@@ -282,7 +270,7 @@ class PersonalOption(CachingModel):
     """
     option = models.ForeignKey(Option)
     value = models.CharField(max_length=100)
-    user = models.ForeignKey(User)  #
+    user = models.ForeignKey(settings.AUTH_USER_MODEL)  #
 
     class Admin(CachingModel.Admin):
         cache = False

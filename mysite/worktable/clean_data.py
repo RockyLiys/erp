@@ -2,7 +2,7 @@
 #用以删除垃圾文件
 import os
 from traceback import print_exc
-import dict4ini
+from mysite.base.dj6 import dict4ini
 import shutil
 import datetime
 import types
@@ -10,10 +10,21 @@ from django.db import connection
 from django.contrib.auth.decorators import permission_required, login_required
 from django.shortcuts import render_to_response
 from django.template import loader, RequestContext, Template, TemplateDoesNotExist
-from mysite.settings import MEDIA_ROOT
+from erp.settings import MEDIA_ROOT
 from django.utils.translation import ugettext_lazy as _
 from django.http import HttpResponse, HttpResponseRedirect
-import json
+from mysite.dbapp.urls import dbapp_url
+from mysite.base import get_all_app_and_models
+from mysite.base.dbapp.utils import getJSResponse
+from django.contrib.sessions.models import Session
+from mysite.iclock.models.model_devoperate import OperateCmd
+from mysite.base.models_logentry import LogEntry
+from mysite.iclock.models.model_devcmdbak import DevCmdBak
+
+try:
+    import json
+except:
+    from simplejson import json
 from django.conf import settings
 import time
 
@@ -48,7 +59,9 @@ def delete_upload_dirs(before_days=7):
                     pass
         
     return count
-    
+
+
+
 #删除临时文件
 def delete_temp_dirs(before_days=7):
     '''
@@ -77,6 +90,7 @@ def delete_temp_dirs(before_days=7):
                 except:
                     pass
     return count
+
 
 def delete_report_list(before_days=7):
     '''
@@ -139,7 +153,6 @@ def execute_sql(sql):
     
 def delete_devcmd_bak(before_days = 7):
     u"删除失败命令表"
-    from mysite.iclock.models.model_devcmdbak import DevCmdBak
     dt_now =  datetime.datetime.now()
     count =0
     sql = u"DELETE FROM devcmds_bak WHERE cmdcommittime<='%s'"
@@ -154,7 +167,7 @@ def delete_devcmd_bak(before_days = 7):
         
 def delete_action_log(before_days = 7):
     u"删除日志表的垃圾数据"
-    from base.models_logentry import LogEntry
+
     sql  = u"DELETE FROM action_log WHERE action_time<='%s'"
     dt_now =  datetime.datetime.now()
     count =0
@@ -170,7 +183,7 @@ def delete_action_log(before_days = 7):
         
 def delete_operate_cmds(before_days = 7):
     u"删除operatecmds表中的垃圾数据"
-    from mysite.iclock.models.model_devoperate import OperateCmd
+
     dt_now =  datetime.datetime.now()
     count = 0
     if before_days and type(before_days) == types.IntType:
@@ -184,7 +197,7 @@ def delete_operate_cmds(before_days = 7):
     
 def delete_session_data(before_days = 7):
     u"删除过期的用户会话记录"
-    from django.contrib.sessions.models import Session
+
     dt_now = datetime.datetime.now()
     count =0
     sql = u"DELETE FROM django_session WHERE expire_date <='%s'"
@@ -200,10 +213,7 @@ def delete_session_data(before_days = 7):
 @login_required
 def get_html_data(request):
     u"默认删除七天以前的记录，不能删除七天以内的数据"
-    from dbapp.urls import dbapp_url
-    from base import get_all_app_and_models
-    from dbapp.utils import getJSResponse
-    
+
     request.dbapp_url =dbapp_url
     apps=get_all_app_and_models()
     dt_now = datetime.datetime.now()
@@ -268,7 +278,7 @@ def get_html_data(request):
                     try:
                         if days>0: 
                             ret += u"%s"%process_key(days)
-                    except Exception,e:
+                    except Exception as e:
                         #import traceback;traceback.print_exc()
                         ret+=u"%s"%e
                     

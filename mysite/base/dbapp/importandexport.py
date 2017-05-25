@@ -816,7 +816,7 @@ def detailthread(data,session_key):
                                 if cellvalue.strip():
                                     if fld=="PIN":
                                         model_emp=sys.modules['mysite.personnel.models.model_emp']
-                                        settings=sys.modules['mysite.settings']
+                                        settings=sys.modules['erp.settings']
                                         if len(str(cellvalue).strip())>getattr(settings,"PIN_WIDTH"):
                                             raise Exception(u"%s"%_(u"人员编号长度过长"))
                                         else:

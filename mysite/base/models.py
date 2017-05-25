@@ -27,6 +27,8 @@ from mysite.base.translation import *
 
 # from mysite.base.sync_contenttype import update_all_contenttypes
 
+from mysite.base.auth_model import CustomUser
+
 unicode = str
 verbose_name = _(u"系统设置")
 _menu_index = 9

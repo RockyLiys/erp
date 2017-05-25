@@ -5,12 +5,13 @@
 
 from django.utils.cache import patch_vary_headers
 from django.utils import translation
-from mysite.settings import MEDIA_URL, ADMIN_MEDIA_PREFIX
+from erp.settings import MEDIA_URL, ADMIN_MEDIA_PREFIX
 from django.conf import settings
 from django.core.cache import cache
 from django.contrib.auth.context_processors import PermWrapper
 from django.utils.translation import ugettext as _
 import datetime
+from erp.settings import UNIT_URL
 
 noLocalePath_list=[MEDIA_URL, ADMIN_MEDIA_PREFIX,
         settings.UNIT_URL+'iclock/tmp/',
@@ -72,7 +73,7 @@ class LocaleMiddleware(object):
                 language = translation.get_language_from_request(request)
                 translation.activate(language)
                 try:
-                   from mysite.settings import UNIT_URL
+
                    #from mysite.urls import surl
                    surl=UNIT_URL[1:]
                    from base.options import appOptions,options

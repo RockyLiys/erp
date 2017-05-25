@@ -2,20 +2,19 @@
 #coding=utf-8
 from models.model_dept import Department
 from models.model_position import Position
-from dbapp.utils import getJSResponse
+from mysite.base.dbapp.utils import getJSResponse
 from django.utils.encoding import smart_str
-from dbapp.modelutils import GetModel
+from mysite.base.dbapp.modelutils import GetModel
 from django.db.models import Q
 from django.utils.simplejson  import dumps 
 from django.utils.translation import ugettext_lazy as _
 from django.shortcuts import render_to_response
 from django.template import loader, RequestContext, Template, TemplateDoesNotExist
-from mysite.settings import MEDIA_ROOT
+from erp.settings import MEDIA_ROOT
 import datetime
-from dbapp.dataviewdb import  model_data_list
+from mysite.base.dbapp.dataviewdb import  model_data_list
 from django.contrib.auth.decorators import login_required
 from mysite.utils import get_option
-from mysite.pos.pos_constant import POS_IC_ADMS_MODEL,POS_DEAL_BAT_SIZE,ONLINE_ALLOWANCE
 
 
 def get_max_in_ids(qs,ids,field_name = "pk__in"):
