@@ -11,7 +11,8 @@ from mysite.base.auth_model import CustomUser
 
 @admin.register(LogEntry)
 class CachingModelAdmin(ModelAdmin):
-    search_fields = ('name',)
+    # search_fields = ('name',)
+    pass
 
 
 @admin.register(AdditionData)

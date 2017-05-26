@@ -8,6 +8,7 @@ from django.apps import AppConfig
 from django.utils.translation import ugettext_lazy as _
 from django.core import checks
 from django.db.models.signals import post_migrate
+from mysite.base.auth_model import post_syncdb_append_permissions
 
 
 class BaseConfig(AppConfig):
@@ -16,7 +17,6 @@ class BaseConfig(AppConfig):
 
     def ready(self):
         # TODO change this code
-        # post_migrate.connect(create_permissions, dispatch_uid="django.contrib.auth.management.create_permissions" )
+        post_migrate.connect(post_syncdb_append_permissions)
         # checks.register(check_user_model, checks.Tags.models)
         # checks.register(check_models_permissions, checks.Tags.models)
-        pass

@@ -13,3 +13,10 @@ class CustomUser(AbstractUser):
     class Meta:
         verbose_name = _('用户')
         verbose_name_plural = _("用户")
+
+
+
+def post_syncdb_append_permissions():
+    # 创建一个超级用户
+    if not CustomUser.objects.filter(username="admin"):
+        CustomUser.objects.create_superuser("admin", "liys_liys@163.com", "admin123")
