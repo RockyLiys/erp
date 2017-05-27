@@ -35,10 +35,11 @@ class AdditionData(models.Model):
         menu_index = 10000
 
     class Meta:
-        verbose_name = _(u'增加的数据')
         ordering = ('-create_time',)
+        verbose_name = _(u'增加的数据')
+        verbose_name_plural = _(u"增加的数据")
 
-    def __unicode__(self):
+    def __str__(self):
         return u"[%s]%s: %s %s" % (self.action_time, self.user, self.get_action_flag_display(), self.object_repr)
 
     def get_edited_object(self):

@@ -80,6 +80,7 @@ class Role(CachingModel):
 
     class Meta:
         verbose_name = _(u"角色")
+        verbose_name_plural = _(u"角色")
 
 
 class UserRole(CachingModel):

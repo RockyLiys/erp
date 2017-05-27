@@ -148,6 +148,8 @@ class SystemOption(CachingModel):
 
     class Meta:
         verbose_name = _(u"系统参数")
+        verbose_name_plural = _(u"系统参数")
+
 
 
 class AppOption(CachingModel):
@@ -240,6 +242,8 @@ class AppOption(CachingModel):
 
     class Meta:
         verbose_name = _(u"系统参数")
+        verbose_name_plural = _(u"系统参数")
+
 
 
 class AppOptionClass(object):
@@ -280,6 +284,8 @@ class PersonalOption(CachingModel):
     class Meta:
         verbose_name = _(u"个人选项")
         unique_together = ('option', 'user')
+        verbose_name_plural = _(u"个人选项")
+        
 
 
 class OptionClass(object):
