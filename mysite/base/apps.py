@@ -14,7 +14,8 @@ from .checks import check_user_model
 
 class BaseConfig(AppConfig):
     name = 'mysite.base'
-    verbose_name = _('base')
+    label = "base"
+    verbose_name = _('系统权限')
 
     def ready(self):
         # TODO change this code
