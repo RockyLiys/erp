@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 from django.conf import settings
 import os
+import logging
 
 
 def initlog():
-    import logging
 
     # 生成一个日志对象
     logger = logging.getLogger()
@@ -12,12 +12,12 @@ def initlog():
     # 象FileHandler, SocketHandler, SMTPHandler等，我由于要写
     # 文件就使用了FileHandler。
     # logfile是一个全局变量，它就是一个文件名，如：'crawl.log'
-    logfile = 'tmp/zk-eco.log'
+    logfile = 'tmp/erp.log'
     try:
         logfile = u"%s" % (settings.LOG_FILE)
     except:
         try:
-            logfile = u"%s/zk-eco.log" % (settings.LOG_DIR)
+            logfile = u"%s/erp.log" % (settings.LOG_DIR)
         except:
             pass
     dir_path = os.path.split(logfile)[0]

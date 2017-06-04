@@ -133,3 +133,5 @@ STATICFILES_DIRS = (
 APP_CONFIG = ''
 APP_HOME = ""
 AUTH_USER_MODEL = 'base.CustomUser'
+
+LOG_FILE = "logs/erp.log"

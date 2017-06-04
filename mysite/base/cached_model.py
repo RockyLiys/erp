@@ -65,7 +65,7 @@ class RowCacheManager(models.Manager):
         try:
             cache.set(model_key, model, cache_expire)
             print("\tset_cache2: %s->%s,%s"%(model_key, model.pk, model))
-        except:
+        except Exception as e:
             print(model_key, model, model.__class__)
             # import traceback; traceback.print_exc()
             pass
@@ -103,7 +103,7 @@ class MetaCaching(ModelBase):
     could break if you upgrade Django. This was done partially as a proof-of-
     concept. It is advised to only use code above the comment line."""
 
-    def __new__(*args, **kwargs):
+    def __new__(cls, *args, **kwargs):
         new_class = ModelBase.__new__(*args, **kwargs)
         new_manager = RowCacheManager()
         new_manager.contribute_to_class(new_class, 'objects')
@@ -130,7 +130,8 @@ class CachingModel(models.Model, OperationBase):
             content_type_id = ContentType.objects.get_for_model(self).pk
             a = AdditionData.objects.get(content_type=content_type_id, object_id=self.pk, key=key,
                                          delete_time__isnull=True)
-            if a.data:  return a.data
+            if a.data:
+                return a.data
             return a.value
         except:
             raise
@@ -188,7 +189,7 @@ class CachingModel(models.Model, OperationBase):
         def action(self):
             pass
 
-    class dataexport(Operation):
+    class data_export(Operation):
         help_text = _(u"数据导出")  # 导出
         verbose_name = _(u"导出")
         visible = False
@@ -204,7 +205,7 @@ class CachingModel(models.Model, OperationBase):
         def action(self):
             pass
 
-    class dataimport(Operation):
+    class data_import(Operation):
         help_text = _(u"导入数据")  # 导入
         verbose_name = u"导入"
         visible = False
@@ -273,7 +274,7 @@ class CachingModel(models.Model, OperationBase):
 
         log_msg_content = kwargs.pop('log_msg', '')
         invalidate_cache = kwargs.pop('invalidate_cache', True)
-        # print "save: %s, super save: %s"%(self.__class__.__name__,self.__dict__)
+        print("save: %s, super save: %s"%(self.__class__.__name__,self.__dict__))
 
         # if SYNC_MODEL:
         #     hk = save_hook(is_new,self,old_obj).check()
@@ -304,15 +305,6 @@ class CachingModel(models.Model, OperationBase):
 
     def data_valid(self, sendtype=SAVETYPE_NEW):  # 数据的业务逻辑处理函数,sendtype表示是1:新增，2:修改
         pass
-
-    def delete_(self):
-        self.status = STATUS_INVALID
-
-        # if SYNC_MODEL:
-        #     hk = save_hook(is_new,self,old_obj).check()
-        # super(CachingModel, self).save()
-        # if SYNC_MODEL:
-        #     hk.sync()
 
     def delete(self):
         if self.Admin.cache:

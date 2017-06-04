@@ -3,10 +3,12 @@
 
 from django.utils.encoding import smart_str
 from django.forms import forms
-
-from simplejson import dumps
 from mysite.base.grid_utils import GridBase
 from mysite.base.dbapp import widgets
+try:
+    from json import dumps
+except:
+    from simplejson import dumps
 
 
 class AppPage(object):
@@ -87,8 +89,8 @@ class GridModel(AppPage):
         }
         m_init_option.update(self.option)
         m_HeadDic.update(m_init_option)
-        addition = {"grid_option": smart_str(dumps(m_HeadDic)).replace('"$', '').replace('$"', '')}
-        addition["hide_list"] = self.hide_list
+        addition = {"grid_option": smart_str(dumps(m_HeadDic)).replace('"$', '').replace('$"', ''),
+                    "hide_list": self.hide_list}
         if self.search_form:
             ''' 查询表单的处理 '''
 
@@ -110,7 +112,7 @@ class GridModel(AppPage):
         addition.update(self.m_context)
         return addition
 
-    def MakeData(self, request, **arg):
+    def make_data(self, request, **arg):
         '''
         组装 items 或 组装sql语句
         '''

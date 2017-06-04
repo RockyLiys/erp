@@ -65,12 +65,14 @@ class NoLogAdmin(CachingModel.Admin):
 
 
 def is_parent_model(pm, m):
-    u''' 检查 模型 pm 是否模型 mo 的所属类型，即是否其外键或级联外键 '''
-    if pm == m: return True
+    u""" 检查 模型 pm 是否模型 mo 的所属类型，即是否其外键或级联外键 """
+    if pm == m:
+        return True
     for f in m._meta.fields:
         if isinstance(f, models.fields.related.ForeignKey):
             if not f.rel.to == m:  # 避免产生无穷递归
-                if is_parent_model(pm, f.rel.to): return True
+                if is_parent_model(pm, f.rel.to):
+                    return True
     return False
 
 
@@ -191,20 +193,8 @@ def check_and_create_model_new_fields(model):
             infos = info.replace('"', ' ').replace("'", " ").replace(",", ' ').replace(". ", " ").split(" ")
             f = search_field(model, infos)
             hc += 1
-            # if f:
-            # print info
-            # print("add_field: ", model.__name__, f.name, "... ",)
-            # try:
-            #     db.add_column(model._meta.db_table, f.name, f)
-            # except:
-            #     if not f.null and not f.has_default():
-            #         f.default = f.get_default()
-            #         if f.default is None: f.default = 1
-            #     db.add_column(model._meta.db_table, f.name, f)
-            #     print(f.null, f.has_default(), f.default)
-            # print(" OK")
-            # c += 1
-        if hc == 0: break;
+        if hc == 0:
+            break
     return c
 
 
