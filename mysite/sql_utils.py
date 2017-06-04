@@ -3,19 +3,19 @@ import os
 import traceback
 from lxml import etree
 from django.core.cache import cache
-import settings
-#from django.db import connection as conn
-from dbutils_pool import getConn,reConn
-from dbutils_pool import OperationalError, InternalError, ProgrammingError
+from django.conf import settings
+# from django.db import connection as conn
+from mysite.base.dbutils_pool import getConn, reConn
+from mysite.base.dbutils_pool import OperationalError, InternalError, ProgrammingError
 
-from base.backup import get_attsite_file
+from mysite.base.backup import get_attsite_file
 
+TIMEOUT = 7 * 24 * 3600  # 7天
 
-TIMEOUT = 7*24*3600 #7天
-
-develop_model = False 
-if get_attsite_file()["Options"]["SQL_PRINT"].lower()=="true":
+develop_model = False
+if get_attsite_file()["Options"]["SQL_PRINT"].lower() == "true":
     develop_model = True
+
 
 def get_curr_db_engine_name():
     u"""
@@ -35,7 +35,10 @@ def get_curr_db_engine_name():
     else:
         db_name = settings.DATABASES["default"]["ENGINE"].split(".")[-1]
     return db_name
+
+
 curr_db_engine_name = get_curr_db_engine_name()
+
 
 def test_conn():
     """
@@ -50,14 +53,14 @@ def test_conn():
     conn = None
     cur = None
     res = False
-    msg = ""    
+    msg = ""
     try:
         conn = getConn()
-        cur = conn.cursor()            
+        cur = conn.cursor()
         cur.execute(test_sql)
-        res = cur.fetchall() 
+        res = cur.fetchall()
         res = True
-    except Exception,e:
+    except Exception as e:
         traceback.print_exc()
         msg = e
     finally:
@@ -65,13 +68,15 @@ def test_conn():
             cur.close()
         if conn:
             conn.close()
-        return res,msg
+        return res, msg
+
 
 def call_reConn():
     """
         重新创建连接池
     """
     reConn()
+
 
 def p_query(sql):
     """
@@ -85,15 +90,15 @@ def p_query(sql):
                         二维list: 正常结果
     """
     if develop_model:
-        print u"p_query()=============>sql: %s"%sql
+        print(u"p_query()=============>sql: %s" % sql)
     conn = None
     cur = None
-    res = None    
+    res = None
     try:
         conn = getConn()
-        cur = conn.cursor()            
+        cur = conn.cursor()
         cur.execute(sql)
-        res = cur.fetchall() 
+        res = cur.fetchall()
     except (OperationalError, InternalError):
         call_reConn()
         traceback.print_exc()
@@ -105,8 +110,8 @@ def p_query(sql):
         if conn:
             conn.close()
         return res
-    
-    
+
+
 def p_query_one(sql):
     """
         dbutils 数据连接池
@@ -120,13 +125,13 @@ def p_query_one(sql):
             list: 正常结果
     """
     if develop_model:
-        print u"p_query_one()=============>sql: %s"%sql
+        print(u"p_query_one()=============>sql: %s" % sql)
     conn = None
     cur = None
-    res = None    
+    res = None
     try:
         conn = getConn()
-        cur = conn.cursor()            
+        cur = conn.cursor()
         cur.execute(sql)
         res = cur.fetchone()
     except (OperationalError, InternalError):
@@ -139,7 +144,8 @@ def p_query_one(sql):
         if conn:
             conn.close()
         return res
-    
+
+
 def p_execute(sql):
     """
         dbutils 数据连接池
@@ -152,23 +158,23 @@ def p_execute(sql):
             -2: 数据库连接失败导致执行失败
     """
     if develop_model:
-        print u"p_execute()=============>sql: %s"%sql
+        print(u"p_execute()=============>sql: %s" % sql)
     conn = None
     cur = None
-    res = None 
+    res = None
     try:
-        conn =  getConn()
-        cur = conn.cursor()            
+        conn = getConn()
+        cur = conn.cursor()
         cur.execute(sql)
         res = cur._cursor.rowcount
         conn.commit()
-    except Exception ,e:
+    except Exception as e:
         if conn:
             conn.rollback()
         traceback.print_exc()
     finally:
-        if res == -1: # 可能是数据库断开连接
-            ret,msg =test_conn()
+        if res == -1:  # 可能是数据库断开连接
+            ret, msg = test_conn()
             if not ret:
                 call_reConn()
                 res = -2
@@ -177,7 +183,8 @@ def p_execute(sql):
         if conn:
             conn.close()
         return res
-    
+
+
 def p_mutiexec(sql_list):
     """
         dbutils 数据连接池
@@ -195,87 +202,57 @@ def p_mutiexec(sql_list):
     res = []
     flag = True
     if develop_model:
-        print u"p_mutiexec()=============>sql: %s"%sql_list
+        print(u"p_mutiexec()=============>sql: %s" % sql_list)
     try:
         conn = getConn()
         cur = conn.cursor()
-        for sql in  sql_list:           
+        for sql in sql_list:
             cur.execute(sql)
             num = cur._cursor.rowcount
             res.append(num)
         conn.commit()
-    except Exception ,e:
+    except Exception as e:
         flag = False
         if conn:
             conn.rollback()
         traceback.print_exc()
     finally:
         if -1 in res:
-            ret,msg =test_conn()
+            ret, msg = test_conn()
             if not ret:
                 call_reConn()
                 flag = False
-                res = [-2,]
+                res = [-2, ]
         if cur:
             cur.close()
         if conn:
             conn.close()
-        return flag,res
-        
-#def exe_sql(sql,params = None,action = True):
-#    """
-#            使用django 的常连接方式
-#    """
-#    if params:
-#        sql = sql%params
-#    if develop_model:
-#        print u"=============>sql: %s"%sql
-#    try:
-#        cur = conn.cursor()            
-#        cur.execute(sql)
-#        if action:
-#            conn._commit()
-#        return cur,conn
-#    except:
-#        conn._rollback()
-#        traceback.print_exc()
-#        return None,None
-#
-#def get_sql_exe_result(sql,params=None):
-#    """
-#          使用django 的常连接方式
-#    """
-#    result = None
-#    if sql:
-#        try:
-#            cur,conn = exe_sql(sql,params,False)
-#            result = cur.fetchall()
-#            conn._commit()
-#        except:
-#            traceback.print_exc()
-#    return result
+        return flag, res
 
-def get_sql_exe_result(sql,params=None):
+
+def get_sql_exe_result(sql, params=None):
     if params:
-        sql = sql%params
+        sql = sql % params
     return p_query(sql)
+
 
 def get_empIdList_by_user(request):
     u"""
         根据当前用户得到该用户所能操作的人员 id 列表
     """
     user = request.user
-    if  user.is_superuser:
+    if user.is_superuser:
         return None
     sql = """select userid from userinfo
                 left join deptadmin on userinfo.defaultdeptid = deptadmin.dept_id
                 left join userinfo_attarea on userinfo.userid = userinfo_attarea.employee_id
                 left join areaadmin on userinfo_attarea.area_id = areaadmin.area_id
             where areaadmin.user_id = %d or deptadmin.user_id = %d
-        """%(user.pk,user.pk)
-    
+        """ % (user.pk, user.pk)
+
     ids = p_query(sql)
     return [id[0] for id in ids]
+
 
 def get_sql_config_file():
     u"""
@@ -284,14 +261,15 @@ def get_sql_config_file():
             @return: 系统的 全局sql配置文件
     """
     if not settings.NEED_SQL:
-        sqlconfig =  None
+        sqlconfig = None
         if develop_model:
-            print  u"get_sql_config_file()========> 无法获取sqlconfig.xml文件配置信息,因为settings文件中参数  NEED_SQL 设置为了 False!" 
+            print(u"get_sql_config_file()========> 无法获取sqlconfig.xml文件配置信息,因为settings文件中参数  NEED_SQL 设置为了 False!")
     else:
-        sqlconfig = settings.APP_HOME+'/'+settings.SQL_CONFIG_FILE
+        sqlconfig = settings.APP_HOME + '/' + settings.SQL_CONFIG_FILE
     return sqlconfig
 
-def get_sql_file_dir(config_file,app = None):
+
+def get_sql_file_dir(config_file, app=None):
     u"""
             @desc:根据 sqlconfig.xml 中 dir 的配置 ,获取 存放存放 sql语句的 xml文件的路径
             @parms:
@@ -302,13 +280,14 @@ def get_sql_file_dir(config_file,app = None):
     file_dir_list = []
     xpath_exp = "dirs/dir/@path"
     if app:
-        xpath_exp = "dirs/dir[@app='%s']/@path"%app
+        xpath_exp = "dirs/dir[@app='%s']/@path" % app
     if os.path.exists(config_file):
-        e =  etree.parse(config_file)
-        file_dir_list = [a.replace(".","/") for a in e.xpath(xpath_exp)]           
+        e = etree.parse(config_file)
+        file_dir_list = [a.replace(".", "/") for a in e.xpath(xpath_exp)]
     return file_dir_list
-    
-def get_sql_file(dir_list,sqlfile):
+
+
+def get_sql_file(dir_list, sqlfile):
     u"""
             @desc:在dir_list 目录下的所有名为 sqlfile的文件
             @params:
@@ -316,14 +295,16 @@ def get_sql_file(dir_list,sqlfile):
                 sqlfile: type<str> sql语句指定的文件名
             @return: type<list> xml 文件完整路径列表
     """
-    sql_xml_files=[]
+    sql_xml_files = []
     for file in dir_list:
-        if os.path.exists(settings.APP_HOME+"/"+file+"/"+sqlfile+".xml"):
-            sql_xml_files.append(settings.APP_HOME+"/"+file+"/"+sqlfile+".xml")
+        if os.path.exists(settings.APP_HOME + "/" + file + "/" + sqlfile + ".xml"):
+            sql_xml_files.append(settings.APP_HOME + "/" + file + "/" + sqlfile + ".xml")
     if develop_model and not sql_xml_files:
-        print u"get_sql_file()========> 无法得到指定的存放 sql语句的xml文件!" 
+        print(u"get_sql_file()========> 无法得到指定的存放 sql语句的xml文件!")
     return sql_xml_files
-def get_sql_by_dict(ele_dict,params={},id_part={},only_content=False):
+
+
+def get_sql_by_dict(ele_dict, params={}, id_part={}, only_content=False):
     u"""
             @desc:根据节点 以及相关的参数,获取sql语句
             @params:
@@ -333,37 +314,39 @@ def get_sql_by_dict(ele_dict,params={},id_part={},only_content=False):
                 only_content : 如果设置为True,则直接返回 xml中的content 内容,不会进行参数匹配
             @return: type<str> 完整的sql语句
     """
-    part= {}
+    part = {}
     part_dict = ele_dict["part"]
     sql_text = ele_dict["sql_text"]
     if only_content:
         sql = sql_text
     else:
-        for k,v in id_part.items():
+        for k, v in id_part.items():
             part[k] = ""
-            if not isinstance(v,list):
-                v = [v,]
+            if not isinstance(v, list):
+                v = [v, ]
             for val in v:
-                if  part_dict.has_key(val):
+                if part_dict.has_key(val):
                     part_ele = part_dict[val]
                     try:
-                        part[k]+=(part_ele.strip()+" ")%params
-                    except KeyError, e:
-                        except_str = u"get_sql_by_dict()========>参数错误:\n\t id 为 %(val)s 的<part>标签缺少参数[%(msg)s] "%{"val":val,"msg":e}
+                        part[k] += (part_ele.strip() + " ") % params
+                    except KeyError as e:
+                        except_str = u"get_sql_by_dict()========>参数错误:\n\t id 为 %(val)s 的<part>标签缺少参数[%(msg)s] " % {
+                            "val": val, "msg": e}
                         raise Exception(except_str)
                     except:
                         traceback.print_exc()
         params.update(part)
         try:
-            sql = sql_text%params
-        except KeyError, e:
-            except_str = u"get_sql_by_dict()========>参数错误:\n\t <content>缺少参数 [%(msg)s] "%{"msg":e}
+            sql = sql_text % params
+        except KeyError as e:
+            except_str = u"get_sql_by_dict()========>参数错误:\n\t <content>缺少参数 [%(msg)s] " % {"msg": e}
             raise Exception(except_str)
         except:
             traceback.print_exc()
     return sql
 
-def  get_sql_ele_content(sqlfiles,engine_name=curr_db_engine_name,sqlid=None):
+
+def get_sql_ele_content(sqlfiles, engine_name=curr_db_engine_name, sqlid=None):
     u"""
             @desc: 获取xml 文件中指定sql节点
                                     规则:
@@ -378,36 +361,39 @@ def  get_sql_ele_content(sqlfiles,engine_name=curr_db_engine_name,sqlid=None):
     sql_ele = None
     for f in sqlfiles:
         if os.path.exists(f):
-            e =  etree.parse(f)
+            e = etree.parse(f)
             if sqlid:
-                content_exp = "/sqlgroup/sql[@id='%s']/content[@engine='%s']"%(sqlid,engine_name)
+                content_exp = "/sqlgroup/sql[@id='%s']/content[@engine='%s']" % (sqlid, engine_name)
             else:
-                content_exp = "/sqlgroup/sql/content[@engine='%s']"%engine_name
-            sql_ele =  e.xpath(content_exp) 
+                content_exp = "/sqlgroup/sql/content[@engine='%s']" % engine_name
+            sql_ele = e.xpath(content_exp)
             if sql_ele:
                 sql_ele = sql_ele[0]
                 break;
-            else: 
+            else:
                 if sqlid:
-                    content_exp = "/sqlgroup/sql[@id='%s']/content[@engine='%s']"%(sqlid,"default")
+                    content_exp = "/sqlgroup/sql[@id='%s']/content[@engine='%s']" % (sqlid, "default")
                 else:
-                    content_exp = "/sqlgroup/sql/content[@engine='%s']"%"default"
-                sql_ele =  e.xpath(content_exp) 
+                    content_exp = "/sqlgroup/sql/content[@engine='%s']" % "default"
+                sql_ele = e.xpath(content_exp)
                 if sql_ele:
                     sql_ele = sql_ele[0]
                     break;
     return sql_ele
 
-def get_sql_ele(sqlfilename,sqlid,app):
+
+def get_sql_ele(sqlfilename, sqlid, app):
     """
         获取sql语句所在的xml文件节点
     """
     engine_name = curr_db_engine_name
     sql_config_file = get_sql_config_file()
-    config_dir = get_sql_file_dir(sql_config_file,app)
-    sql_file = get_sql_file(config_dir,sqlfilename)
-    sql_ele = get_sql_ele_content(sql_file,engine_name,sqlid)
+    config_dir = get_sql_file_dir(sql_config_file, app)
+    sql_file = get_sql_file(config_dir, sqlfilename)
+    sql_ele = get_sql_ele_content(sql_file, engine_name, sqlid)
     return sql_ele
+
+
 def update_ele_to_dict(sql_ele):
     """
                     将一个sql语句的xml 节点转化为一个字典 易于存储
@@ -421,13 +407,14 @@ def update_ele_to_dict(sql_ele):
         }
     """
     part = {}
-    sql_text = sql_ele.text.strip().replace("\n\t","  ").replace("\n","  ")
+    sql_text = sql_ele.text.strip().replace("\n\t", "  ").replace("\n", "  ")
     part_ele = sql_ele.xpath("part")
     for p in part_ele:
         part[p.attrib["id"].strip()] = p.text.strip()
-    return {"sql_text":sql_text,"part":part}
-  
-def get_sql(sqlfilename,sqlid=None,app = None,params={},id_part={},only_content=False):
+    return {"sql_text": sql_text, "part": part}
+
+
+def get_sql(sqlfilename, sqlid=None, app=None, params={}, id_part={}, only_content=False):
     u"""
         @desc:获取sql语句内容
         @params:
@@ -440,31 +427,28 @@ def get_sql(sqlfilename,sqlid=None,app = None,params={},id_part={},only_content=
         @return: 根据条件筛选出来的 sql 语句
     """
     if develop_model:
-        print u"""get_sql()===========> The params you given is:
+        print(u"""get_sql()===========> The params you given is:
             sqlfilename:%s
             sqlid:%s
             app:%s
             params:%s
             id_part:%s
             only_content:%s
-        """%(str(sqlfilename),str(sqlid),str(app),str(params),str(id_part),str(only_content))
+        """ % (str(sqlfilename), str(sqlid), str(app), str(params), str(id_part), str(only_content)))
     sql = " "
-    try: 
-        key = "%s_%s_%s"%(sqlfilename,sqlid,app)
+    try:
+        key = "%s_%s_%s" % (sqlfilename, sqlid, app)
         sql_dict = cache.get(key)
-        if  not sql_dict: 
-            sql_ele = get_sql_ele(sqlfilename,sqlid,app)
+        if not sql_dict:
+            sql_ele = get_sql_ele(sqlfilename, sqlid, app)
             sql_dict = update_ele_to_dict(sql_ele)
-            cache.set(key,sql_dict,TIMEOUT)
+            cache.set(key, sql_dict, TIMEOUT)
         else:
             if develop_model:
-                print "get_sql()===========>The sql is come from cache."
-        sql = get_sql_by_dict(sql_dict,params,id_part,only_content)
+                print("get_sql()===========>The sql is come from cache.")
+        sql = get_sql_by_dict(sql_dict, params, id_part, only_content)
     except:
-        traceback.print_exc()    
+        traceback.print_exc()
     if develop_model:
-         print u"get_sql()============> sql_result:\n\t%s"%sql
+        print(u"get_sql()============> sql_result:\n\t%s" % sql)
     return sql
-    
-    
-    

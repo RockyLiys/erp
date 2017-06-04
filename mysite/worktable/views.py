@@ -1,38 +1,37 @@
 # -*- coding: utf-8 -*-
 from django.http import HttpResponse
-from dbapp.utils import getJSResponse
 from django.template import loader, RequestContext, Template, TemplateDoesNotExist
 from django.shortcuts import render_to_response
-from dbapp.datautils import NoFound404Response
-from dbapp.modelutils import GetModel
-from mysite.worktable.models import InstantMsg, GroupMsg, UsrMsg, MsgType
 import datetime
-from base.middleware import threadlocals
+from mysite.base.middleware import threadlocals
 from django.utils.translation import ugettext as _
 from django.conf import settings
-import os
-from django.db.models import Q
 from threading import Event, Semaphore
 from django.utils.encoding import force_unicode
+from django.contrib.auth.models import User, Group
+from django.template.defaultfilters import escapejs
+import os
+from django.db.models import Q
+
 from mysite.base.dbapp.datautils import QueryData
 from mysite.personnel.models.model_emp import Employee
 from mysite.base.dbapp.dataviewdb import model_data_list
-from django.contrib.auth.models import User, Group
-from django.template.defaultfilters import escapejs
 from erp.settings import APP_HOME
 from mysite.iclock.models.model_trans import Transaction
 from mysite.att.models.model_empspecday import EmpSpecDay
 from mysite.sql_utils import p_query
-from django.db.models import Q
 from mysite.base.dbapp.datautils import filterdata_by_user
 from mysite.personnel.models import Employee
-import os
 from mysite.personnel.models.model_emp import Employee
+from mysite.base.dbapp.utils import getJSResponse
+from mysite.base.dbapp.datautils import NoFound404Response
+from mysite.base.dbapp.modelutils import GetModel
+from mysite.worktable.models import InstantMsg, GroupMsg, UsrMsg, MsgType
 
 try:
     import json
 except:
-    from simplejson import json
+    import simplejson as json
 
 
 def Employee_objects(request):

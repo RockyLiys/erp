@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from django.conf.urls.defaults import *
-from clean_data import get_html_data
+from mysite.base.dbapp.clean_data import get_html_data
+
 urlpatterns = patterns('mysite.worktable',
         (r'^get_search_form/(?P<app_label>[^/]*)/(?P<model_name>[^/]*)/$','common_panel.get_search_from'),
         (r'^outputEmpStructureImage/$', 'views.outputEmpStructureImage'),

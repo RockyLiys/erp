@@ -1,16 +1,15 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 import os,sys
-from dbapp.utils import scheduleTask
-from mysite.iclock.importwm import * 
-        
+from mysite.base.dbapp.utils import scheduleTask
+import  datetime
 WORK_PATH=os.path.split(os.path.abspath(__file__))[0]
 WORK_PATH=os.path.split(WORK_PATH)[0]
 
 def hourlyTask():
     import datetime
     try:
-            checkUpload()
+        checkUpload()
     except: pass
 
     #重新把自己加入任务列表, 1小时候重新运行
@@ -46,4 +45,4 @@ if __name__=='__main__':
     elif sys.argv[1]=='install':
             installTasks()
     else:
-            print "ERROR argument"
+            print("ERROR argument")
