@@ -1,14 +1,11 @@
 # coding: utf-8
 
-__all__ = ['Counter']
-
-__metaclass__ = type
 
 import redis.exceptions as redispy_exception
+from mysite.base.ooredis import String
+from mysite.base.ooredis.type_case import IntTypeCase
+from mysite.base.ooredis.const import DEFAULT_INCREMENT, DEFAULT_DECREMENT
 
-from ooredis import String
-from ooredis.type_case import IntTypeCase
-from ooredis.const import DEFAULT_INCREMENT, DEFAULT_DECREMENT
 
 class Counter(String):
     """
@@ -109,3 +106,7 @@ class Counter(String):
         """
         self.decr(decrement)
         return self
+
+__all__ = ['Counter']
+
+__metaclass__ = type

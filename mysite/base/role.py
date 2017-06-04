@@ -3,18 +3,19 @@
 from django.db import models
 from django.core.cache import cache
 from django.contrib.auth.models import User, Permission
+from mysite.base.auth_model import CustomUser, CustomPermission
 from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ObjectDoesNotExist
 from django.utils.translation import ugettext_lazy as _
-from django import forms
 from django.conf import settings
+from django import forms
 
 from mysite.base.base_code import base_code_by
 from mysite.base.cached_model import CachingModel
 from mysite.base.models import is_parent_model
 
-User._menu_index = 400
-Permission._visible = False
+CustomUser._menu_index = 400
+CustomPermission._visible = False
 
 
 class RoleObjectProperty(CachingModel):
@@ -32,7 +33,7 @@ class RoleObjectProperty(CachingModel):
     class Admin(CachingModel.Admin):
         visible = False
 
-    def __unicode__(self):
+    def __str__(self):
         return u"%s, %s.%s" % (self.role, self.object_type, self.property)
 
     def limit_object_type_to(self, queryset):
@@ -56,7 +57,7 @@ class Role(CachingModel):
     """
     object_type = models.ForeignKey(ContentType, blank=True, null=True)
     name = models.CharField(_(u'角色名称'), max_length=40, blank=False, null=False)
-    permissions = models.ManyToManyField(Permission, verbose_name=_(u'权限'))
+    permissions = models.ManyToManyField(CustomPermission, verbose_name=_(u'权限'))
 
     class Admin(CachingModel.Admin):
         menu_index = 400
@@ -94,10 +95,7 @@ class UserRole(CachingModel):
 
 
 def get_browse_fields(model, user, search=False):
-    '''
-    API
-    查询一个用户user可以浏览/查看模型model的那些字段
-    '''
+    """ API 查询一个用户user可以浏览/查看模型model的那些字段"""
     fields = []
     ct = ContentType.objects.get_for_model(model)
     for ur in user_role.objects.filter(user=user):  # 检查该用户的所有角色
@@ -114,10 +112,7 @@ def get_browse_fields(model, user, search=False):
 
 
 def get_search_fields(model, user):
-    '''
-    API
-    查询用户user可以搜索一个模型的那些字段
-    '''
+    """API查询用户user可以搜索一个模型的那些字段"""
     return get_browse_fields(model, user, "search")
 
 

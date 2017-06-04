@@ -12,7 +12,8 @@ from django.utils.encoding import force_text, python_2_unicode_compatible
 
 from mysite.base.modeladmin import ModelAdmin, CACHE_EXPIRE
 from mysite.base.operation import Operation
-from django.conf import  settings
+from django.conf import settings
+
 ADDITION = 1
 CHANGE = 2
 DELETION = 3
@@ -24,9 +25,9 @@ smart_unicode = str
 
 
 class LogEntryManager(models.Manager):
-    
     def log_action(self, user_id, content_type_id, object_id, object_repr, action_flag, change_message=''):
-        e = self.model(None, None, user_id, content_type_id, smart_unicode(object_id), object_repr[:200], action_flag, change_message)
+        e = self.model(None, None, user_id, content_type_id, smart_unicode(object_id), object_repr[:200], action_flag,
+                       change_message)
         e.save(force_insert=True)
 
     def log_action_other(self, user_id, object, change_message=''):
@@ -45,7 +46,8 @@ class LogEntryManager(models.Manager):
 class LogEntry(models.Model):
     action_time = models.DateTimeField(_(u'动作时间'), auto_now=True)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name=_(u"用户"), null=True, related_name="logentryofuser")
-    content_type = models.ForeignKey(ContentType, verbose_name=_(u"对象类型"), blank=True, null=True, related_name="logentryofct")
+    content_type = models.ForeignKey(ContentType, verbose_name=_(u"对象类型"), blank=True, null=True,
+                                     related_name="logentryofct")
     object_id = models.CharField(_(u'对象ID'), max_length=100, blank=True, null=True)
     object_repr = models.CharField(_(u'对象描述'), max_length=200)
     action_flag = models.PositiveSmallIntegerField(_(u'动作标识'), choices=
@@ -57,7 +59,7 @@ class LogEntry(models.Model):
         (LOGIN, _(u"登录")),
         (EXPORT, _(u"导出"))
     )
-    )
+                                                   )
     change_message = models.CharField(_(u'改变消息'), max_length=512, blank=True)
     objects = LogEntryManager()
 
@@ -66,7 +68,7 @@ class LogEntry(models.Model):
     def clear():
         LogEntry.objects.all().delete()
 
-    class dataexport(Operation):
+    class data_export(Operation):
         help_text = _(u"数据导出")  # 导出
         verbose_name = _(u"导出")
         visible = False
@@ -101,7 +103,7 @@ class LogEntry(models.Model):
         # list_display=('user|obj_url','action_time|fmt_datetime','content_type|content_type_str', 'object_repr|content_url:item', 'action_flag', 'change_message')
         # content_type|content_type_str'只是简单的翻译，但是以content_type查询的时候还是查不出来
         list_display = (
-        'user', 'action_time|fmt_datetime', 'content_type', 'object_repr', 'action_flag', 'change_message')
+            'user', 'action_time|fmt_datetime', 'content_type', 'object_repr', 'action_flag', 'change_message')
         list_filter = ('action_time', 'user', 'action_flag', 'content_type')
         disabled_perms = ["change_logentry", "add_logentry", "delete_logentry"]
         read_only = True

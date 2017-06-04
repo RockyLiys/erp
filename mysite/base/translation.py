@@ -25,9 +25,8 @@ class DataTranslation(CachingModel):
         visible = False
         menu_index = 600
 
-    def __unicode__(self):
-        return u"[%s] %s.%s: %s -> %s" % (
-        self.language, self.content_type.name, self.property, self.value, self.display)
+    def __str__(self):
+        return u"[%s] %s.%s: %s -> %s" % (self.language, self.content_type.name, self.property, self.value, self.display)
 
     @classmethod
     def get_cache_key(self, content_type, field_name, value, language):
@@ -41,10 +40,11 @@ class DataTranslation(CachingModel):
                 if not language:  # 没有传入语言参数，取当前请求
                     language = translation.get_language()
                 # print "language:", language
-                if not language: return value
+                if not language:
+                    return value
                 key = self.get_cache_key(ct, field_name, value, language)
                 value2 = cache.get(key)
-                if value2 == None:
+                if value2 is None:
                     try:
                         value2 = self.objects.get(content_type=ct, property=field_name, language=language,
                                                   value=value).display
@@ -54,9 +54,10 @@ class DataTranslation(CachingModel):
                                                       language=language.split("_")[0], value=value).display
                         else:
                             raise e
-                    if value2 != None:
+                    if value2 is not None:
                         cache.set(key, value2, CACHE_EXPIRE)
-                if value2: return value2
+                if value2:
+                    return value2
             except ObjectDoesNotExist:
                 # 写入表中等待翻译
                 self(content_type=ct, property=field_name, language=language, value=value, display=value).save()
@@ -83,7 +84,7 @@ class DataTranslation(CachingModel):
 
 
 class StrTranslation(CachingModel):
-    '''定义字符串资源的多国语言显示'''
+    """定义字符串资源的多国语言显示"""
     str = models.ForeignKey("StrResource")
     language = models.CharField(max_length=10)
     display = models.CharField(max_length=400)
@@ -92,7 +93,7 @@ class StrTranslation(CachingModel):
         menu_index = 600
         visible = False
 
-    def __unicode__(self):
+    def __str__(self):
         return u"[%s] %s -> %s" % (self.language, self.str, self.display)
 
     class Meta:
@@ -100,9 +101,7 @@ class StrTranslation(CachingModel):
 
 
 class StrResource(CachingModel):
-    '''
-    定义系统中用到的字符串资源
-    '''
+    """定义系统中用到的字符串资源"""
     app = models.CharField(max_length=20, null=True, blank=True)  # 应用
     str = models.CharField(max_length=400)  # 字符串资源
 
@@ -111,11 +110,11 @@ class StrResource(CachingModel):
         cache = 20 * 24 * 60 * 60  # 20day才过期
         visible = False
 
-    def __unicode__(self):
+    def __str__(self):
         if self.app:
             return u"[%s] %s" % (self.app, self.str)
         else:
-            return unicode(self.str)
+            return str(self.str)
 
     def get_display(self, language):
         try:
@@ -144,7 +143,7 @@ class StrResource(CachingModel):
                 return self.objects.get(app=None, str=str).get_display(language)
             except:
                 pass
-        return unicode(str)
+        return str
 
     @classmethod
     def get_text(self, str, language=None):
@@ -155,7 +154,7 @@ class StrResource(CachingModel):
             if settings.DEBUG:
                 # 写入表中等待翻译
                 self(app=None, str=str).save()
-        return unicode(str)
+        return str
 
 
 def updateResTrans(str, res):
@@ -177,11 +176,11 @@ def updateResTrans(str, res):
 
 
 def _ugettext__(str):
-    '''
+    """
     _ugettext_，该函数先根据字符串的格式检查是否数据项，若是则进行数据项替换，
     否则，再检查字符串资源翻译表，若还是没有的话，调用原来的翻译函数.
     数据项格式为: ~应用名.模型名.字段名.需翻译的字符串
-    '''
+    """
     if str.find('~') == 0:
         s = str[1:].split(".", 3)
         # print "_ugettext data", s
@@ -219,31 +218,22 @@ def _ugettext_(str):
     """
     cached _ugettext__ function
     """
-    # return translation.ugettext(str)
-    # language=translation.get_language()
-    # key=u'%s:i18n:%s:%s' % (CACHE_PREFIX, language, str.replace(' ', '_'))
-    # s=cache.get(key)
-    # if s:
-    #         return s
     try:
         s = _ugettext__(str)
     except:
         import traceback;
         traceback.print_exc()
         s = str
-        # print "_ugettext_ not in cache: ", str, s
-    #        cache.set(key, s, CACHE_EXPIRE)
     return s
 
 
 # 检查并替换原来的国际化函数
 if not (translation.ugettext.__doc__ == _ugettext_.__doc__):
-    # print "install the new translation, ", translation.ugettext
+    print("install the new translation, ", translation.ugettext)
     translation.old_ugettext = translation.ugettext
     translation.ugettext = _ugettext_
     _ = lazy(_ugettext_, str)
     translation.old_ugettext_lazy = translation.ugettext_lazy
     translation.ugettext_lazy = _
-    pass
 
 ugettext_lazy = lazy(_ugettext_)

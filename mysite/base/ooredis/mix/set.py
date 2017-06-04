@@ -7,9 +7,9 @@ __metaclass__ = type
 import collections
 import redis.exceptions as redispy_exception
 
-from ooredis.const import REDIS_TYPE
-from ooredis.mix.key import Key
-from ooredis.mix.helper import get_key_name_from_single_value, format_key
+from mysite.base.ooredis.const import REDIS_TYPE
+from mysite.base.ooredis.mix.key import Key
+from mysite.base.ooredis.mix.helper import get_key_name_from_single_value, format_key
 
 MOVE_FAIL_CAUSE_MEMBER_NOT_IN_SET = 0
 

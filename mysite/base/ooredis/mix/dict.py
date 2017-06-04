@@ -7,14 +7,14 @@ __metaclass__ = type
 import collections
 import redis.exceptions as redispy_exception
 
-from ooredis.mix.key import Key
-from ooredis.const import REDIS_TYPE
-from ooredis.mix.helper import format_key
+from mysite.base.ooredis.mix.key import Key
+from mysite.base.ooredis.const import REDIS_TYPE
+from mysite.base.ooredis.mix.helper import format_key
 
 DELETE_FAIL_CAUSE_KEY_NOT_EXISTS = False
 
-class Dict(Key, collections.MutableMapping):
 
+class Dict(Key, collections.MutableMapping):
     """ 一个字典对象，底层是redis的hash实现。 """
 
     def __repr__(self):
@@ -145,23 +145,23 @@ class Dict(Key, collections.MutableMapping):
             return self._client.hlen(self.name)
         except redispy_exception.ResponseError:
             raise TypeError
-        
-    def sets(self,dic):
+
+    def sets(self, dic):
         try:
-            #redis_value = self._type_case.to_redis(python_value)
+            # redis_value = self._type_case.to_redis(python_value)
             self._client.hmset(self.name, dic)
         except redispy_exception.ResponseError:
             raise TypeError
-    
+
     def getall(self):
         try:
-            #redis_value = self._type_case.to_redis(python_value)
+            # redis_value = self._type_case.to_redis(python_value)
             return self._client.hgetall(self.name)
         except redispy_exception.ResponseError:
             raise TypeError
-        
-    def incrby(self,field,increment=1):
+
+    def incrby(self, field, increment=1):
         try:
-            return self._client.hincrby(self.name,field,increment)
+            return self._client.hincrby(self.name, field, increment)
         except redispy_exception.ResponseError:
             raise TypeError

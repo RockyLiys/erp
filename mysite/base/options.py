@@ -24,20 +24,20 @@ PERSONAL = "2"
 class Option(CachingModel):
     """
     """
-    name = models.CharField(max_length=30)  # 名称
-    app_label = models.CharField(max_length=30)  # 应用
-    catalog = models.CharField(max_length=30)  # 分类
-    group = models.CharField(max_length=30)  # 分组
-    widget = models.CharField(max_length=400)  # 输入控件
-    required = models.BooleanField()  # 是否必须
+    name = models.CharField(_("名称"), max_length=30)  # 名称
+    app_label = models.CharField(_("应用"), max_length=30)  # 应用
+    catalog = models.CharField(_("分类"), max_length=30)  # 分类
+    group = models.CharField(_("分组"), max_length=30)  # 分组
+    widget = models.CharField(_("输入控件"), max_length=400)  # 输入控件
+    required = models.BooleanField(_("是否必须"))  # 是否必须
     validator = models.CharField(max_length=400)  # 输入数据的检验条件
     verbose_name = models.CharField(max_length=80)  # 该选项的显示名称，在界面上显示的名称
     help_text = models.CharField(max_length=160)  # 对该选项的详细说明，在界面上显示的提示信息
-    visible = models.BooleanField()  # 是否在界面上可见
-    default = models.CharField(max_length=100)  # 默认值
-    read_only = models.BooleanField(default=False)  # 是否可以修改
-    for_personal = models.BooleanField(default=True)  # 是否可以个性化
-    type = models.CharField(max_length=50, default='CharField')  # 数据类型
+    visible = models.BooleanField(_("是否在界面上可见"))  # 是否在界面上可见
+    default = models.CharField(_("默认值"), max_length=100)  # 默认值
+    read_only = models.BooleanField(_("是否可以修改"), default=False)  # 是否可以修改
+    for_personal = models.BooleanField(_("是否可以个性化"), default=True)  # 是否可以个性化
+    type = models.CharField(_("数据类型"), max_length=50, default='CharField')  # 数据类型
 
     class Admin(CachingModel.Admin):
         log = False
@@ -45,8 +45,9 @@ class Option(CachingModel):
 
     class Meta:
         verbose_name = _(u'个性设置')
+        verbose_name_plural = _(u'个性设置')
 
-    def __unicode__(self):
+    def __str__(self):
         return u"%s.%s" % (ugettext(self.app_label),
                            self.verbose_name and ugettext(self.verbose_name) or self.name)
 
@@ -151,13 +152,12 @@ class SystemOption(CachingModel):
         verbose_name_plural = _(u"系统参数")
 
 
-
 class AppOption(CachingModel):
     optname = models.CharField(_(u'参数名字'), max_length=50, default="")
     value = models.CharField(_(u'参数值'), max_length=100, default="")
     discribe = models.CharField(_(u'描述'), max_length=100, null=True, blank=True)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.optname + "(" + self.value + ")"
 
     class _clear(ModelOperation):
@@ -245,7 +245,6 @@ class AppOption(CachingModel):
         verbose_name_plural = _(u"系统参数")
 
 
-
 class AppOptionClass(object):
     def __getitem__(self, optname):
         try:
@@ -285,7 +284,6 @@ class PersonalOption(CachingModel):
         verbose_name = _(u"个人选项")
         unique_together = ('option', 'user')
         verbose_name_plural = _(u"个人选项")
-        
 
 
 class OptionClass(object):

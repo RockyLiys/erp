@@ -2,6 +2,7 @@
 
 import pickle
 
+
 class SerializeTypeCase:
     """ 处理 python 对象序列化(使用 pickle 模块)。 """
 

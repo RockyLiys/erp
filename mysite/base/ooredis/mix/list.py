@@ -7,9 +7,9 @@ __metaclass__ = type
 import collections
 import redis.exceptions as redispy_exception
 
-from ooredis.mix.key import Key
-from ooredis.const import LEFTMOST, RIGHTMOST
-from ooredis.mix.helper import get_key_name_from_single_value, format_key
+from mysite.base.ooredis.mix.key import Key
+from mysite.base.ooredis.const import LEFTMOST, RIGHTMOST
+from mysite.base.ooredis.mix.helper import get_key_name_from_single_value, format_key
 
 # block time
 INDEFINITELY = 0
@@ -19,6 +19,7 @@ REMOVE_ALL_ELEMENT_EQUAL_VALUE = 0
 
 # redis blpop/brpop result index
 VALUE = 1
+
 
 # redis 的list是可变的(mutable)，没有继承MutableSequence主要是
 # 考虑到python的列表是单向增长的(从左到右)，
@@ -119,13 +120,13 @@ class List(Key, collections.Sequence):
             if isinstance(key, slice):
                 # 1.EDGE version(get key in server side):
                 #
-                #if key.start == key.stop != None: return []
+                # if key.start == key.stop != None: return []
                 #
-                #start = LEFTMOST if key.start == None else key.start
-                #stop = RIGHTMOST if key.stop == None else key.stop-1
+                # start = LEFTMOST if key.start == None else key.start
+                # stop = RIGHTMOST if key.stop == None else key.stop-1
                 #
-                #return self._client.lrange(self.name, start, stop)
-   
+                # return self._client.lrange(self.name, start, stop)
+
                 # 2.SAFE version(get key in client side):
                 redis_value = self._client.lrange(self.name, LEFTMOST, RIGHTMOST)[key]
                 python_value = map(self._type_case.to_python, redis_value)
@@ -170,8 +171,8 @@ class List(Key, collections.Sequence):
                     self._client.ltrim(self.name, 1, 0)
                 # del list[x:] --> keep list[0:x-1]
                 elif key.stop == None:
-                    self._client.ltrim(self.name, LEFTMOST, key.start-1) 
-                # del list[:y] --> keep list[y:-1]
+                    self._client.ltrim(self.name, LEFTMOST, key.start - 1)
+                    # del list[:y] --> keep list[y:-1]
                 elif key.start == None:
                     self._client.ltrim(self.name, key.stop, RIGHTMOST)
                 # del list[x:y] --> keep list[0:x-1] and list[y:-1]
@@ -292,7 +293,7 @@ class List(Key, collections.Sequence):
             TypeError: 尝试对非list类型的对象进行操作时抛出。
         """
         try:
-            value = self._type_case.to_redis(value) 
+            value = self._type_case.to_redis(value)
             self._client.rpush(self.name, value)
         except redispy_exception.ResponseError:
             raise TypeError
@@ -318,7 +319,7 @@ class List(Key, collections.Sequence):
         except redispy_exception.ResponseError:
             raise TypeError
 
-    def brpop(self, timeout=INDEFINITELY ):
+    def brpop(self, timeout=INDEFINITELY):
         """ brpop是rpop命令的阻塞版本，
         当给定列表内没有任何元素可供弹出的时候，
         连接将被brpop命令阻塞，直到等待超时或发现可弹出元素为止。 
@@ -396,11 +397,11 @@ class List(Key, collections.Sequence):
             return self._type_case.to_python(value)
         except redispy_exception.ResponseError:
             raise TypeError
-        
-    def ltrim(self,len):
+
+    def ltrim(self, len):
         """只保留list中某个范围的值
         """
         try:
-            self._client.ltrim(self.name, 0, len-1)
+            self._client.ltrim(self.name, 0, len - 1)
         except redispy_exception.ResponseError:
             raise TypeError

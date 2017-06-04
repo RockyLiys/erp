@@ -2,6 +2,7 @@
 
 import json
 
+
 class JsonTypeCase:
     """ 用于将 python 对象转化为 JSON 对象。 """
 
@@ -11,7 +12,7 @@ class JsonTypeCase:
         如果值不能转成 JSON 对象，抛出 TypeError 异常。
         """
         return json.dumps(value)
-    
+
     @staticmethod
     def to_python(value):
         """ 将 Json 对象转回原来的类型。

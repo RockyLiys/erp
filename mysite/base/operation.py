@@ -7,6 +7,8 @@ from django import forms
 from django.db.models.query import QuerySet
 import datetime
 from mysite.base import *
+
+
 # from mysite.base.models_logentry import LogEntry
 
 
@@ -26,7 +28,8 @@ class ModelOperation(object):
     @classmethod
     def permission_code(cls, model_name):
         cn = "%s_%s" % (cls.__name__.lower(), model_name.lower())
-        if cn.find('_') == 0: cn = cn[1:]
+        if cn.find('_') == 0:
+            cn = cn[1:]
         return cn
 
     def __init__(self, model, verbose_name=None):
@@ -138,8 +141,8 @@ class OperationBase(object):
             except:
                 # 文件字段报错
                 pass
-            #            return tuple([name for name in dir(self)
-            #                    if type(getattr(self, name))==types.TypeType and issubclass(getattr(self, name), ModelOperation)])
+                #            return tuple([name for name in dir(self)
+                #                    if type(getattr(self, name))==types.TypeType and issubclass(getattr(self, name), ModelOperation)])
         return tuple(cc)
 
     @classmethod

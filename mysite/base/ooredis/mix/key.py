@@ -4,11 +4,11 @@ __all__ = ['Key']
 
 __metaclass__ = type
 
-from ooredis.client import get_client
-from ooredis.type_case import GenericTypeCase
+from mysite.base.ooredis.client import get_client
+from mysite.base.ooredis.type_case import GenericTypeCase
+
 
 class Key:
-
     """ key对象的基类，所有类型的key都继承这个类。 """
 
     def __init__(self, name, client=None, type_case=GenericTypeCase):

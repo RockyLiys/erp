@@ -5,10 +5,10 @@ __all__ = ['String']
 __metaclass__ = type
 
 import redis.exceptions as redispy_exception
+from mysite.base.ooredis.mix.key import Key
+from mysite.base.ooredis.const import REDIS_TYPE
+from mysite.base.ooredis.mix.helper import format_key
 
-from ooredis.mix.key import Key
-from ooredis.const import REDIS_TYPE
-from ooredis.mix.helper import format_key
 
 class String(Key):
     """ 为储存单个值的 Key 对象提供 set，get 和 getset操作。 """
@@ -38,11 +38,11 @@ class String(Key):
         # set 命令可以无视类型进行设置的命令， 为了保证类型的限制
         # ooredis 里对一个非 string 类型进行 set 将引发 TypeError 异常。
         if self.exists and self._represent != REDIS_TYPE['string']:
-                raise TypeError
+            raise TypeError
 
         if self.exists and preserve:
             raise ValueError
-       
+
         redis_value = self._type_case.to_redis(python_value)
         if expire:
             self._client.setex(self.name, redis_value, expire)

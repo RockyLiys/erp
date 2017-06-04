@@ -1,5 +1,6 @@
 # coding: utf-8
 
+
 class StringTypeCase:
     """ 处理字符串类型(str或unicode)值的转换。 """
 
@@ -8,7 +9,7 @@ class StringTypeCase:
         """ 接受 basestring 子类的值( str 或 unicode )，
         否则抛出 TypeError 。
         """
-        if isinstance(value, basestring):
+        if isinstance(value, str):
             return value
 
         raise TypeError
@@ -22,4 +23,4 @@ class StringTypeCase:
             try:
                 return str(value)
             except:
-                return unicode(value)
+                return value

@@ -7,8 +7,9 @@ __metaclass__ = type
 import collections
 import redis.exceptions as redispy_exception
 
-from ooredis.mix.key import Key
-from ooredis.mix.helper import format_key
+from mysite.base.ooredis.mix.key import Key
+from mysite.base.ooredis.mix.helper import format_key
+
 
 class Deque(Key):
     """ 一个双端队列 key 对象，底层实现是 redis 的 list 类型。 """
@@ -120,7 +121,7 @@ class Deque(Key):
             None
         """
         self.delete()
-    
+
     def count(self, python_item):
         """
         计算队列中和 item 相等的元素的个数。
@@ -242,7 +243,7 @@ class Deque(Key):
             raise TypeError
 
     def __delitem__(self, key):
-        raise Exception 
+        raise Exception
 
     def __getitem__(self, index):
         all_item = list(self)

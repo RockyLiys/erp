@@ -1,7 +1,8 @@
 # coding: utf-8
 
-from helper import is_any_instance
+from .helper import is_any_instance
 from numbers import Integral
+
 
 class GenericTypeCase:
     """ 通用类型转换类，可以处理 str/unicode/int/float 类型值。 """
@@ -11,7 +12,7 @@ class GenericTypeCase:
         """ 接受 int/long/str/unicode/float 类型值，
         否则抛出 TypeError 。
         """
-        if is_any_instance(value, basestring, Integral, float):
+        if is_any_instance(value, str, Integral, float):
             return value
 
         raise TypeError
@@ -24,15 +25,16 @@ class GenericTypeCase:
         """
         if value is None:
             return None
-        elif not isinstance(value, basestring):
+        elif not isinstance(value, str):
             # redis 返回的只能是字符串值
             raise TypeError
         else:
             # 从最限定的类型开始转换
-#            try: return int(value)
-#            except:
-#                try: return float(value)
-#                except:
-            try: return str(value)
+            #            try: return int(value)
+            #            except:
+            #                try: return float(value)
+            #                except:
+            try:
+                return str(value)
             except:
-                return unicode(value)
+                return value
