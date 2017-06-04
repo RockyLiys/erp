@@ -8,8 +8,9 @@ from django.db.models.query import QuerySet
 import datetime
 from mysite.base import *
 
-
-# from mysite.base.models_logentry import LogEntry
+MIN_DATETIME = datetime.datetime(1, 1, 1)
+MAX_DATETIME = datetime.datetime(3000, 1, 1)
+NON_FIELD_ERRORS = '__all__'
 
 
 class ModelOperation(object):
@@ -84,11 +85,6 @@ class Operation(ModelOperation):
             return self.object.status == STATUS_OK
         except:
             return True
-
-
-MIN_DATETIME = datetime.datetime(1, 1, 1)
-MAX_DATETIME = datetime.datetime(3000, 1, 1)
-NON_FIELD_ERRORS = '__all__'
 
 
 def parse_value(request, param_name, op):
@@ -287,7 +283,7 @@ def dump_object(obj):
 
 
 def do_action(op, request, param={}):
-    # print "do_action for op, param:%s"%param
+    print("do_action for op, param:%s"%param)
     try:
         op.request = request
         if hasattr(op, "action_batch"):

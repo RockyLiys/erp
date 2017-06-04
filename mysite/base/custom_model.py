@@ -5,6 +5,7 @@ from django.utils.encoding import smart_str
 from django.forms import forms
 from mysite.base.grid_utils import GridBase
 from mysite.base.dbapp import widgets
+
 try:
     from json import dumps
 except:
@@ -35,7 +36,6 @@ class GridModel(AppPage):
     option = {}
     search_form = []
     hide_list = []
-    #    buttons = []#[{},{}]
     grid = None
     _paged = False
 
@@ -54,7 +54,6 @@ class GridModel(AppPage):
 
     def SetPageSize(self, psize):
         self.grid.pagesize = psize
-        # self.option["rp"] = psize
 
     def _GetPageSize(self):
         if self.option.has_key("rp"):
@@ -112,10 +111,8 @@ class GridModel(AppPage):
         addition.update(self.m_context)
         return addition
 
-    def make_data(self, request, **arg):
-        '''
-        组装 items 或 组装sql语句
-        '''
+    def MakeData(self, request, **arg):
+        """组装 items 或 组装sql语句"""
         pass
 
     def SetBlank(self):
