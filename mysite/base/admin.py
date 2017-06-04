@@ -6,7 +6,7 @@ from django.contrib import admin
 from mysite.base.models_addition import AdditionData
 from mysite.base.models_logentry import LogEntry
 from mysite.base.modeladmin import ModelAdmin
-from mysite.base.auth_model import CustomUser
+from mysite.base.auth_model import CustomUser, CustomGroup, CustomPermission
 
 
 @admin.register(LogEntry)
@@ -22,4 +22,13 @@ class AdditionDataAdmin(ModelAdmin):
 
 @admin.register(CustomUser)
 class CustomUserAdmin(ModelAdmin):
+    pass
+
+@admin.register(CustomGroup)
+class CustomGroupAdmin(ModelAdmin):
+    pass
+
+
+@admin.register(CustomPermission)
+class CustomPermissionAdmin(ModelAdmin):
     pass

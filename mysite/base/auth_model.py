@@ -1,9 +1,23 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 
+# !/usr/bin/env python
+# -*- coding:utf-8 -*-
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import Group, Permission, AbstractUser, UserManager
+
+
+class CustomPermission(Permission):
+    class Meta:
+        verbose_name = _('用户权限')
+        verbose_name_plural = _("用户权限")
+
+
+class CustomGroup(Group):
+    class Meta:
+        verbose_name = _('用户组')
+        verbose_name_plural = _("用户组")
 
 
 class CustomUserManager(UserManager):
