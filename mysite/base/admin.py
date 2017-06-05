@@ -25,6 +25,7 @@ class AdditionDataAdmin(ModelAdmin):
 class CustomUserAdmin(UserAdmin, ModelAdmin):
     pass
 
+
 @admin.register(CustomGroup)
 class CustomGroupAdmin(ModelAdmin):
     pass

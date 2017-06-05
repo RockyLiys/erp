@@ -14,4 +14,4 @@ class ModelAdmin(admin.ModelAdmin):
 
     def __init__(self, *args, **kwargs):
         super(ModelAdmin, self).__init__(*args, **kwargs)
-        self.form.label_suffix = 'some suffix here'
+        self.form.label_suffix = ':'
