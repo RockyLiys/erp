@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 from django.contrib import admin
+from django.contrib.auth.admin import UserAdmin
 
 # Register your models here.
 from mysite.base.models_addition import AdditionData
@@ -21,7 +22,7 @@ class AdditionDataAdmin(ModelAdmin):
 
 
 @admin.register(CustomUser)
-class CustomUserAdmin(ModelAdmin):
+class CustomUserAdmin(UserAdmin, ModelAdmin):
     pass
 
 @admin.register(CustomGroup)
